@@ -69,11 +69,12 @@
   padding: 5px;
   border-radius: 5px;
   border: 2px solid transparent;
-  transition: border-color 0.2s;
+  transition: background-color 0.2s;
 }
 
 .color-option.selected {
-  border-color: var(--color-primary);
+  /* border-color: var(--color-primary); */
+  background-color: var(--border-color);
 }
 
 .color-swatch {

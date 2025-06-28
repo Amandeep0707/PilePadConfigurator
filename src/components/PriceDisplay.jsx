@@ -12,7 +12,7 @@ const PriceDisplay = React.memo(function PriceDisplay({ poles, pricePerPole, tot
         <div className="price-row">
           <span>{poles}-Pole Set @ {formatCurrency(pricePerPole)}/each</span>
           {/* --- THIS IS THE CORRECTED LINE --- */}
-          <span>{formatCurrency(poles * pricePerPole)}</span>
+          {/* <span>{formatCurrency(poles * pricePerPole)}</span> */}
         </div>
       </div>
       <div className="price-total">
