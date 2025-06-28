@@ -133,3 +133,95 @@
       grid-column: 1 / 2;
   }
 }
+
+.button-text {
+  /* Smooth transition for the opacity change */
+  transition: opacity 0.2s ease-in-out;
+}
+
+.button-text.fade-in {
+  opacity: 1;
+}
+
+.button-text.fade-out {
+  opacity: 0;
+}
+
+.button-text.copied-text {
+  /* Position the "Copied" text directly on top of the original text */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%; /* Ensure it's centered within the button */
+  text-align: center;
+}
+
+.action-buttons-container {
+    grid-column: 2 / 3;
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.action-button {
+    /* --- REMOVE flex-grow: 1 --- */
+    /* We will control width more explicitly */
+    width: 50%; /* Make each button take up half the container width */
+    
+    border: 1px solid transparent;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+
+    /* --- NEW: Ensure text is always centered --- */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ... (add-to-cart-button styles remain the same) ... */
+.add-to-cart-button {
+  background-color: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+.add-to-cart-button:hover {
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+/* --- UPDATED: Share button styles --- */
+.share-button {
+  background-color: transparent;
+  border-color: var(--border-color);
+  color: var(--color-text);
+  font-weight: 500;
+  margin-top: 1rem;
+  transition: background-color 0.1s linear, color 0.1s linear, border-color 0.1s linear;
+}
+
+.share-button:hover {
+  background-color: var(--border-color);
+  border-color: transparent;
+}
+
+/* --- UPDATED: "Copied!" state styles --- */
+.share-button.copied {
+  background-color: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  transform: translateY(0); 
+  cursor: default;
+}
+
+
+@media (max-width: 1024px) {
+    .action-buttons-container {
+        grid-column: 1 / 2;
+    }
+}

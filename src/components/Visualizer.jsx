@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import cld from '../cloudinary';
 import { AdvancedImage, lazyload, responsive } from '@cloudinary/react';
+import SkeletonLoader from './SkeletonLoader';
 import '../styles/Visualizer.css';
 
 // ... (sanitizeForFilename function remains unchanged) ...
@@ -12,8 +13,8 @@ function sanitizeForFilename(type, value) {
     return `w${sanitized.endsWith('p0') ? sanitized.slice(0, -2) : sanitized}`;
   }
   if (type === 'length') {
-    const inches = parseInt(value, 10);
-    return `l${inches}`;
+    // The value is already a clean string of inches, e.g., "192"
+    return `l${value}`;
   }
   return value;
 }
@@ -92,9 +93,7 @@ function Visualizer({ environmentId, color, width, length }) {
   return (
     <>
       <div className="visualizer-wrapper" onClick={handleImageClick}>
-        <div className={`loader-overlay ${isTransitioning ? 'visible' : ''}`}>
-          <div className="spinner"></div>
-        </div>
+        {isTransitioning && <SkeletonLoader />}
         
         {displayedImage && (
           <AdvancedImage
