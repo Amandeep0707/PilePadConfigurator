@@ -5,7 +5,7 @@ import cld from '../cloudinary';
 import { AdvancedImage, lazyload, responsive } from '@cloudinary/react';
 import '../styles/Visualizer.css';
 
-// (sanitizeForFilename function remains unchanged)
+// ... (sanitizeForFilename function remains unchanged) ...
 function sanitizeForFilename(type, value) {
   if (type === 'width') {
     const sanitized = value.replace('"', '').replace('.', 'p');
@@ -18,64 +18,120 @@ function sanitizeForFilename(type, value) {
   return value;
 }
 
+
 function Visualizer({ environmentId, color, width, length }) {
   const [displayedImage, setDisplayedImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(true);
+  const [isEnlarged, setIsEnlarged] = useState(false);
+  
+  // NEW: State specifically for the lightbox loader
+  const [isLightboxLoading, setIsLightboxLoading] = useState(true);
 
   const targetImageId = useMemo(() => {
     const sanitizedWidth = sanitizeForFilename('width', width);
     const sanitizedLength = sanitizeForFilename('length', length);
     return `renders/${environmentId}_${color}_${sanitizedWidth}_${sanitizedLength}`;
   }, [environmentId, color, width, length]);
-
+  
   useEffect(() => {
     const cldImage = cld.image(targetImageId);
     const imageUrl = cldImage.toURL();
 
     if (displayedImage && imageUrl === displayedImage.toURL()) {
-        setIsLoading(false); // Ensure loader is off if image is already loaded
-        return;
-    };
-    
-    setIsLoading(true);
+      setIsTransitioning(false);
+      return;
+    }
+
+    setIsTransitioning(true);
+    if (isEnlarged) setIsEnlarged(false);
+
     const img = new Image();
     img.src = imageUrl;
 
     img.onload = () => {
       setDisplayedImage(cldImage);
-      setIsLoading(false);
     };
 
     img.onerror = () => {
       console.warn(`Render not found in Cloudinary: ${targetImageId}. Using fallback.`);
       const fallbackImage = cld.image('renders/trailer_grey_w2_l36');
       setDisplayedImage(fallbackImage);
-      setIsLoading(false);
     };
-  }, [targetImageId]); // Simplified dependency array
+  }, [targetImageId]);
+  
+  useEffect(() => {
+    if (displayedImage) {
+      setIsTransitioning(false);
+    }
+  }, [displayedImage]);
+
+
+  const handleImageClick = () => {
+    if (!isTransitioning) {
+      // When opening the lightbox, assume it will need to load.
+      setIsLightboxLoading(true);
+      setIsEnlarged(true);
+    }
+  };
+
+  const handleCloseEnlarged = () => {
+    setIsEnlarged(false);
+  };
+
+  // NEW: Event handlers for the enlarged image
+  const handleLightboxImageLoad = () => {
+    setIsLightboxLoading(false);
+  };
+  
+  const handleLightboxImageError = () => {
+    // If high-res fails, we still want to hide the loader and show whatever we can
+    setIsLightboxLoading(false);
+    console.error("High-resolution lightbox image failed to load.");
+  };
 
   return (
-    // This wrapper is ONLY for establishing the aspect-ratio box.
-    <div className="visualizer-wrapper">
-      {/* The spinner is a direct child */}
-      {isLoading && (
-        <div className="loader-overlay">
+    <>
+      <div className="visualizer-wrapper" onClick={handleImageClick}>
+        <div className={`loader-overlay ${isTransitioning ? 'visible' : ''}`}>
           <div className="spinner"></div>
         </div>
+        
+        {displayedImage && (
+          <AdvancedImage
+            key={displayedImage.publicID}
+            cldImg={displayedImage}
+            className={`visualizer-image ${isTransitioning ? '' : 'loaded'}`}
+            plugins={[lazyload(), responsive({ steps: 200 })]}
+          />
+        )}
+      </div>
+
+      {isEnlarged && (
+        <div className="lightbox-overlay" onClick={handleCloseEnlarged}>
+          {/* Show a spinner inside the lightbox while loading */}
+          {isLightboxLoading && (
+            <div className="lightbox-loader">
+              <div className="spinner"></div>
+            </div>
+          )}
+
+          <AdvancedImage
+            cldImg={displayedImage}
+            // Add a class to hide the image until it's loaded
+            className={`lightbox-image ${isLightboxLoading ? 'loading' : ''}`}
+            // Use the onLoad and onError event handlers
+            onLoad={handleLightboxImageLoad}
+            onError={handleLightboxImageError}
+            plugins={[responsive({ steps: 400 })]}
+          />
+          
+          {/* Only show the close text after the image has loaded */}
+          {!isLightboxLoading && (
+            <span className="lightbox-close-text">Click anywhere to close</span>
+          )}
+        </div>
       )}
-      
-      {/* The AdvancedImage is also a direct child. We pass the styles to it. */}
-      {displayedImage && (
-        <AdvancedImage
-          key={displayedImage.publicID}
-          cldImg={displayedImage}
-          // --- THIS IS THE CRITICAL CHANGE ---
-          // Apply the positioning and fade classes directly to the component.
-          className={`visualizer-image ${isLoading ? 'loading' : 'loaded'}`}
-          plugins={[lazyload(), responsive({ steps: 200 })]}
-        />
-      )}
-    </div>
+    </>
   );
 }
 
