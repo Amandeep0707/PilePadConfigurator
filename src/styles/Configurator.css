@@ -1,0 +1,134 @@
+.configurator-container {
+  width: 100%;
+  max-width: 1600px; /* Allow the component to grow larger on wide screens */
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+.configurator-main {
+  display: grid;
+  /* On large screens, give the visualizer 1.5x the space of the options */
+  grid-template-columns: 1.5fr 1fr;
+  gap: 3rem;
+  align-items: flex-start;
+}
+
+/* On medium and small screens, stack the visualizer on top of the options */
+@media (max-width: 1024px) {
+  .configurator-main {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+  }
+}
+
+.options-column h2 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.option-group {
+  margin-bottom: 1.5rem;
+}
+
+.option-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.option-group select {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.color-selector {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.color-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.color-option.selected {
+  border-color: var(--color-primary);
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+}
+
+/* These specific colors should NOT change with the theme */
+.color-swatch.black {
+  background-color: #222;
+}
+
+.color-swatch.grey {
+  background-color: #cccccc;
+}
+
+.add-to-cart-button {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.add-to-cart-button:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.add-to-cart-container {
+  /* Align this container with the options column in the grid */
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  padding-top: 1rem;
+}
+
+.add-to-cart-container {
+  /* This will align the button with the options column above it */
+  grid-column: 2 / 3;
+}
+
+.add-to-cart-button {
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  /* On stacked mobile layout, ensure it takes full width below the options */
+  .add-to-cart-container {
+      grid-column: 1 / 2;
+  }
+}

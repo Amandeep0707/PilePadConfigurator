@@ -1,0 +1,19 @@
+.price-container {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.price-breakdown,
+.price-total {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.price-total {
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-top: 1rem;
+}

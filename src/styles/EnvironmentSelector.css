@@ -1,0 +1,46 @@
+.env-selector-container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.env-selector-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.env-options {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.env-option {
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    width: 100%;
+    max-width: 320px;
+    background-color: var(--color-surface);
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.env-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px var(--shadow-color);
+}
+
+.env-option img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.env-option h3 {
+    margin: 0;
+    padding: 1rem;
+}
