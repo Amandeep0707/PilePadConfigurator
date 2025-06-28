@@ -34,7 +34,7 @@ npm install
 Run the application locally:
 
 ```bash
-npm start
+npm run dev
 ```
 
 Follow the on-screen instructions to begin configuring your pile pads.
