@@ -8,7 +8,7 @@ PLACEHOLDER_IMAGE_NAME = 'placeholder.jpg'
 
 # This data is replicated from src/data/configOptions.js
 ENVIRONMENTS = ['trailer', 'lift2', 'lift4']
-COLORS = ['black', 'grey']
+COLORS = ['none', 'black', 'grey']
 
 def generate_lift_lengths():
     """Generates the length options for lifts from 7' to 20'."""

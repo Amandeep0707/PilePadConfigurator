@@ -8,22 +8,25 @@ export const environments = [
     name: "Boat Trailer",
     poles: 2,
     image: selectTrailerImg,
+    basePrice: 125.0, // Base price for the trailer itself
   },
   {
     id: "lift2",
     name: "2 Pole Boat Lift",
     poles: 2,
     image: selectLift2Img,
+    basePrice: 150.0, // Base price for the 2-pole lift
   },
   {
     id: "lift4",
     name: "4 Pole Boat Lift",
     poles: 4,
     image: selectLift4Img,
+    basePrice: 220.0, // Base price for the 4-pole lift
   },
 ];
 
-// ... generateLiftLengths function remains the same ...
+// Helper to generate the length options for lifts
 const generateLiftLengths = () => {
   const lengths = [];
   // From 7' to 20' in 0.5' increments
@@ -47,42 +50,41 @@ export const options = {
       label: l, // e.g., "36""
     })),
   },
-  // Options are the same for 2 and 4 pole lifts
   lift: {
     widths: ['2"', '2.5"', '3.0"', '3.5"', '4.0"', '4.5"'],
     lengths: generateLiftLengths(),
   },
   colors: [
+    { id: "none", name: "NONE" },
     { id: "black", name: "BLACK" },
     { id: "grey", name: "GREY" },
   ],
 };
 
-// --- NEW: Realistic Pricing Model ---
-const BASE_PRICE_PER_POLE = 150.0; // A base price for the smallest size
-const PRICE_PER_INCH_WIDTH = 10.0; // Extra cost for each inch of width over the minimum
-const PRICE_PER_FOOT_LENGTH = 5.0; // Extra cost for each foot of length over the minimum
+// This now calculates the ADD-ON cost of a single sleeve, not its total price.
+const BASE_SLEEVE_ADDON_COST = 10.0; // The cost for the smallest sleeve
+const PRICE_PER_INCH_WIDTH = 10.0;
+const PRICE_PER_FOOT_LENGTH = 5.0;
 
 /**
- * Calculates the price per pole based on its dimensions.
+ * Calculates the ADD-ON cost for a single sleeve based on its dimensions.
  * @param {string} width - e.g., "3.5\""
- * @param {string} length - e.g., "144\" (12.0')"
- * @returns {number} The calculated price for a single pole.
+ * @param {string} length - e.g., "192"
+ * @returns {number} The calculated add-on cost for one sleeve.
  */
-function calculatePricePerPole(width, length) {
+function calculateSleeveAddonCost(width, length) {
   const numericWidth = parseFloat(width);
-  // This will now correctly parse "192" instead of "192" (16.0')"
   const numericLengthInches = parseInt(length);
   const numericLengthFeet = numericLengthInches / 12;
 
   const widthModifier = (numericWidth - 2) * PRICE_PER_INCH_WIDTH;
   const lengthModifier = (numericLengthFeet - 7) * PRICE_PER_FOOT_LENGTH;
 
-  const finalPrice = BASE_PRICE_PER_POLE + widthModifier + lengthModifier;
+  const finalCost = BASE_SLEEVE_ADDON_COST + widthModifier + lengthModifier;
 
-  return Math.max(BASE_PRICE_PER_POLE, finalPrice);
+  return Math.max(BASE_SLEEVE_ADDON_COST, finalCost);
 }
 
 export const pricing = {
-  calculatePricePerPole,
+  calculateSleeveAddonCost, // Export the new function
 };

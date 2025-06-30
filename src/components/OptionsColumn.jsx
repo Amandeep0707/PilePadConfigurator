@@ -7,14 +7,13 @@ import { options } from '../data/configOptions';
 const OptionsColumn = React.memo(function OptionsColumn({
   configOptions,
   width,
-  length, // This is now a value like "192"
+  length,
   color,
   onWidthChange,
   onLengthChange,
   onColorChange,
   priceDisplay
 }) {
-  // ... (handleColorKeyDown remains the same)
   const handleColorKeyDown = (e, colorId) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -27,27 +26,7 @@ const OptionsColumn = React.memo(function OptionsColumn({
       <h2>Create Your PolePads</h2>
 
       <div className="option-group">
-        <label htmlFor="width-select">Width</label>
-        <select id="width-select" value={width} onChange={(e) => onWidthChange(e.target.value)}>
-          {configOptions.widths.map(w => <option key={w} value={w}>{w}</option>)}
-        </select>
-      </div>
-
-      <div className="option-group">
-        <label htmlFor="length-select">Length</label>
-        {/* --- UPDATE TO RENDER OPTIONS FROM THE NEW OBJECT STRUCTURE --- */}
-        <select id="length-select" value={length} onChange={(e) => onLengthChange(e.target.value)}>
-          {configOptions.lengths.map(l => (
-            <option key={l.value} value={l.value}>
-              {l.label}
-            </option>
-          ))}
-        </select>
-      </div>
-      
-      {/* ... (color selector remains the same) ... */}
-       <div className="option-group">
-        <label>Color</label>
+        <label>Sleeves Color</label>
         <div className="color-selector">
           {options.colors.map(c => (
             <div 
@@ -62,6 +41,38 @@ const OptionsColumn = React.memo(function OptionsColumn({
               <div className={`color-swatch ${c.id}`} />
               <span>{c.name}</span>
             </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* --- UPDATED: Width Buttons with Grid Layout --- */}
+      <div className="option-group">
+        <label>Width</label>
+        <div className="options-grid">
+          {configOptions.widths.map(w => (
+            <button
+              key={w}
+              className={`option-button ${width === w ? 'selected' : ''}`}
+              onClick={() => onWidthChange(w)}
+            >
+              {w}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* --- UPDATED: Length Buttons with Grid Layout --- */}
+      <div className="option-group">
+        <label>Length</label>
+        <div className="options-grid">
+          {configOptions.lengths.map(l => (
+            <button
+              key={l.value}
+              className={`option-button ${length === l.value ? 'selected' : ''}`}
+              onClick={() => onLengthChange(l.value)}
+            >
+              {l.label}
+            </button>
           ))}
         </div>
       </div>

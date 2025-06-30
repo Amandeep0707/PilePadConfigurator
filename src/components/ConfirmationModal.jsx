@@ -1,65 +1,74 @@
-// src/components/SimpleModal.jsx
+// src/components/ConfirmationModal.jsx
 
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import '../styles/ConfirmationModal.css'; // We can reuse the same CSS
+import '../styles/ConfirmationModal.css';
 
-const SimpleModal = ({ isOpen, closeModal, config, onConfirm }) => {
-  // Effect to handle the 'Escape' key press to close the modal
+const ConfirmationModal = ({ isOpen, closeModal, config, onConfirm }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        closeModal();
-      }
+      if (e.key === 'Escape') closeModal();
     };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-    }
-
-    // Cleanup function to remove the event listener
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    if (isOpen) document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, closeModal]);
 
-  // If the modal isn't open, render nothing.
-  if (!isOpen) {
-    return null;
-  }
+  if (!isOpen) return null;
 
   const formatCurrency = (num) => `$${num.toFixed(2)}`;
 
-  // Use a portal to render the modal at the top of the DOM tree
+  // Calculate the cost breakdown for the modal display
+  const isSleeveSelected = config && config.color !== 'none';
+  const basePrice = isSleeveSelected ? config.totalPrice - (config.totalPrice - config.basePrice) : config.totalPrice;
+  const sleeveCost = isSleeveSelected ? config.totalPrice - config.basePrice : 0;
+
   return createPortal(
-    // The overlay div, which closes the modal when clicked
     <div className="modal-overlay" onClick={closeModal}>
-      {/* The modal panel itself. We stop propagation here to prevent clicks inside from closing it. */}
       <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
-        <h3 className="modal-title">Confirm Your Configuration</h3>
+        <h3 className="modal-title">Confirm Your Order</h3>
 
         {config ? (
           <>
             <div className="modal-summary">
-              <p>You are adding the following item to your cart:</p>
-              <ul>
-                <li><strong>Environment:</strong> {config.environment}</li>
-                <li><strong>Poles:</strong> {config.poles}</li>
-                <li><strong>Width:</strong> {config.width}</li>
-                <li><strong>Length:</strong> {config.length}</li>
-                <li><strong>Color:</strong> <span className="capitalize">{config.color}</span></li>
-              </ul>
-              <p className="modal-total">
-                <strong>Total:</strong> {formatCurrency(config.totalPrice)}
-              </p>
+              <p>Please review the items you are adding to your cart:</p>
+              
+              {/* --- NEW: Detailed Breakdown --- */}
+              <div className="summary-item">
+                <span className="summary-label">{config.environment}</span>
+                <span className="summary-value">{formatCurrency(config.basePrice)}</span>
+              </div>
+              
+              {isSleeveSelected && (
+                <div className="summary-item summary-addon">
+                  <span className="summary-label">
+                    PolePad Sleeves ({config.poles}x, {config.width}, {config.length}, <span className="capitalize">{config.color}</span>)
+                  </span>
+                  <span className="summary-value">{formatCurrency(sleeveCost)}</span>
+                </div>
+              )}
+
+              {!isSleeveSelected && (
+                 <div className="summary-item summary-addon">
+                  <span className="summary-label">
+                    PolePad Sleeves
+                  </span>
+                  <span className="summary-value">Not Selected</span>
+                </div>
+              )}
+
+            </div>
+
+            <div className="modal-total-section">
+              <span className="summary-label">Total Cost</span>
+              <span className="summary-value total-value">{formatCurrency(config.totalPrice)}</span>
             </div>
 
             <div className="modal-buttons">
               <button type="button" className="button-secondary" onClick={closeModal}>
-                Cancel
+                Edit Configuration
               </button>
               <button type="button" className="button-primary" onClick={onConfirm}>
-                Add to Cart
+                Confirm & Add to Cart
               </button>
             </div>
           </>
@@ -72,4 +81,4 @@ const SimpleModal = ({ isOpen, closeModal, config, onConfirm }) => {
   );
 };
 
-export default SimpleModal;
+export default ConfirmationModal;

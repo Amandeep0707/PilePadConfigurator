@@ -29,6 +29,10 @@ function Visualizer({ environmentId, color, width, length }) {
   const [isLightboxLoading, setIsLightboxLoading] = useState(true);
 
   const targetImageId = useMemo(() => {
+    if (color === "none") {
+      return `renders/${environmentId}_base`;
+    }
+
     const sanitizedWidth = sanitizeForFilename('width', width);
     const sanitizedLength = sanitizeForFilename('length', length);
     return `renders/${environmentId}_${color}_${sanitizedWidth}_${sanitizedLength}`;

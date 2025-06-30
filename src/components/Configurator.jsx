@@ -6,113 +6,94 @@ import OptionsColumn from './OptionsColumn';
 import PriceDisplay from './PriceDisplay';
 import '../styles/Configurator.css';
 
-// Helper to sanitize URL params
-const sanitize = (val, type = 'string') => {
-  if (type === 'length') return val; // Length is already a clean string of numbers
-  return val.replace(/[^a-zA-Z0-9-.]/g, '');
-};
+const sanitize = (val) => val.replace(/[^a-zA-Z0-9-.]/g, '');
 
 function Configurator({ onBack, onOpenModal }) {
-
   const { environmentId } = useParams();
-  const environment = useMemo(() => environments.find(env => env.id === environmentId), [environmentId]);
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // The environment is now derived directly and memoized. It's the source of truth.
+  const environment = useMemo(() => environments.find(env => env.id === environmentId), [environmentId]);
+
+  // If the URL is invalid or still loading, show a fallback.
   if (!environment) {
-    return <div>Error: Environment not found. <button onClick={onBack}>Go Back</button></div>;
+    return <p>Loading environment...</p>;
   }
-  
+
   const isLift = environment.id.includes('lift');
   const configOptions = isLift ? options.lift : options.trailer;
   
-  // --- STATE INITIALIZATION UPDATED ---
-  const [width, setWidth] = useState(
-    () => configOptions.widths.find(w => sanitize(w) === searchParams.get('width')) || configOptions.widths[0]
-  );
-  // Length state now finds the matching value, or defaults to the first value
-  const [length, setLength] = useState(
-    () => configOptions.lengths.find(l => l.value === searchParams.get('length'))?.value || (isLift ? '144' : configOptions.lengths[0].value)
-  );
-  const [color, setColor] = useState(
-    () => options.colors.find(c => c.id === searchParams.get('color'))?.id || options.colors[0].id
-  );
+  // A single state object for the entire configuration.
+  const [config, setConfig] = useState(() => {
+    // This initializer function runs only once, synchronously, before the first render.
+    const initialWidth = configOptions.widths.find(w => sanitize(w) === searchParams.get('width')) || configOptions.widths[0];
+    const initialLength = configOptions.lengths.find(l => l.value === searchParams.get('length'))?.value || (isLift ? '144' : configOptions.lengths[0].value);
+    const initialColor = options.colors.find(c => c.id === searchParams.get('color'))?.id || options.colors[1].id;
+    return {
+      width: initialWidth,
+      length: initialLength,
+      color: initialColor,
+    };
+  });
 
-  const [totalPrice, setTotalPrice] = useState(0);
-  
-  const [copyButtonText, setCopyButtonText] = useState('Share Configuration');
+  // Derived state for the total price, memoized to recalculate only when inputs change.
+  const totalPrice = useMemo(() => {
+    let finalTotal = environment.basePrice;
+    if (config.color !== 'none') {
+      const sleeveCost = pricing.calculateSleeveAddonCost(config.width, config.length) * environment.poles;
+      finalTotal += sleeveCost;
+    }
+    return finalTotal;
+  }, [config.width, config.length, config.color, environment]);
 
-  // NEW: State to control the 'copied' class
+  // UI state for the copy button.
   const [isCopied, setIsCopied] = useState(false);
-
-  // Use a ref to manage the timeout to prevent conflicts if the user clicks multiple times
   const copyTimeoutRef = useRef(null);
 
+  // Effect to sync the state back to the URL's query parameters.
   useEffect(() => {
     const params = new URLSearchParams();
-    params.set('width', sanitize(width));
-    params.set('length', length); 
-    params.set('color', color);
+    params.set('width', sanitize(config.width));
+    params.set('length', config.length);
+    params.set('color', config.color);
     setSearchParams(params, { replace: true });
-  }, [width, length, color, setSearchParams]);
+  }, [config, setSearchParams]);
 
-  useEffect(() => {
-    const pricePerPole = pricing.calculatePricePerPole(width, length);
-    const total = pricePerPole * environment.poles;
-    setTotalPrice(total);
-  }, [width, length, environment.poles]);
-
+  // Use useCallback for handlers to ensure they are stable and don't cause re-renders.
+  // We use the functional form of setState (prev => ...) so we don't need 'config' in the dependency array.
+  const handleWidthChange = useCallback((newWidth) => setConfig(prev => ({ ...prev, width: newWidth })), []);
+  const handleLengthChange = useCallback((newLength) => setConfig(prev => ({ ...prev, length: newLength })), []);
+  const handleColorChange = useCallback((newColor) => setConfig(prev => ({ ...prev, color: newColor })), []);
+  
   const handleCopyLink = (event) => {
     event.stopPropagation();
     if (isCopied) return;
-
-    // We no longer set the text here, only the `isCopied` state
     if (!navigator.clipboard) {
-      console.error("Clipboard API not available.");
-      setIsCopied(true); // Still trigger the visual "error" state
+      setIsCopied(true);
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-      copyTimeoutRef.current = setTimeout(() => {
-        setIsCopied(false);
-      }, 3000); // Give more time for an error message
+      copyTimeoutRef.current = setTimeout(() => setIsCopied(false), 3000);
       return;
     }
-
     navigator.clipboard.writeText(window.location.href).then(() => {
       setIsCopied(true);
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-      copyTimeoutRef.current = setTimeout(() => {
-        setIsCopied(false);
-      }, 2000);
+      copyTimeoutRef.current = setTimeout(() => setIsCopied(false), 2000);
     });
   };
 
-  // --- THIS IS THE CRITICAL CHANGE ---
   const handleAddToCartClick = (event) => {
     event.stopPropagation();
-    // Find the full label for the current length value to show in the modal
-    const lengthLabel = configOptions.lengths.find(l => l.value === length)?.label || length;
-
-    const currentConfig = {
+    const lengthLabel = configOptions.lengths.find(l => l.value === config.length)?.label || config.length;
+    onOpenModal({
       environment: environment.name,
+      basePrice: environment.basePrice,
       poles: environment.poles,
-      width,
-      length: lengthLabel, // Pass the user-friendly label to the modal
-      color,
-      totalPrice,
-    };
-    onOpenModal(currentConfig);
+      width: config.width,
+      length: lengthLabel,
+      color: config.color,
+      totalPrice: totalPrice,
+    });
   };
-  
-  const memoizedPriceDisplay = useMemo(() => (
-    <PriceDisplay
-        pricePerPole={totalPrice / environment.poles}
-        totalPrice={totalPrice}
-    />
-  ), [totalPrice, environment.poles]);
-
-  const handleWidthChange = useCallback(newWidth => setWidth(newWidth), []);
-  const handleLengthChange = useCallback(newLength => setLength(newLength), []);
-  const handleColorChange = useCallback(newColor => setColor(newColor), []);
-
 
   return (
     <div className="configurator-container">
@@ -122,43 +103,51 @@ function Configurator({ onBack, onOpenModal }) {
         <div className="visualizer-column">
           <Visualizer
             environmentId={environment.id}
-            color={color}
-            width={width}
-            length={length}
+            color={config.color}
+            width={config.width}
+            length={config.length}
           />
         </div>
-        <OptionsColumn
-            configOptions={configOptions}
-            width={width}
-            length={length}
-            color={color}
-            onWidthChange={handleWidthChange}
-            onLengthChange={handleLengthChange}
-            onColorChange={handleColorChange}
-            priceDisplay={memoizedPriceDisplay}
-        />
-        <div className="action-buttons-container">
-          <button 
-            className={`action-button share-button ${isCopied ? 'copied' : ''}`} 
-            onClick={(e) => handleCopyLink(e)}
-            // Add this to prevent resizing
-            style={{ position: 'relative' }}
-          >
-            {/* --- NEW: Two spans for a smooth cross-fade --- */}
-            <span className={`button-text ${isCopied ? 'fade-out' : 'fade-in'}`}>
-              Share Configuration
-            </span>
-            <span className={`button-text copied-text ${isCopied ? 'fade-in' : 'fade-out'}`}>
-              {navigator.clipboard ? 'Link Copied!' : 'Not Supported'}
-            </span>
-          </button>
-          <button 
-            className="action-button add-to-cart-button" 
-            onClick={(e) => handleAddToCartClick(e)}
-          >
-            Add to Cart
-          </button>
-      </div>
+        
+        <div className="options-panel-wrapper">
+          <OptionsColumn
+              configOptions={configOptions}
+              width={config.width}
+              length={config.length}
+              color={config.color}
+              onWidthChange={handleWidthChange}
+              onLengthChange={handleLengthChange}
+              onColorChange={handleColorChange}
+              priceDisplay={
+                <PriceDisplay
+                  basePrice={environment.basePrice}
+                  sleeveCost={config.color === 'none' ? 0 : (totalPrice - environment.basePrice)}
+                  totalPrice={totalPrice}
+                />
+              }
+          />
+
+          <div className="action-buttons-container">
+            <button 
+              className={`action-button share-button ${isCopied ? 'copied' : ''}`} 
+              onClick={handleCopyLink} // Pass the event object implicitly
+              style={{ position: 'relative' }}
+            >
+              <span className={`button-text ${isCopied ? 'fade-out' : 'fade-in'}`}>
+                Share Configuration
+              </span>
+              <span className={`button-text copied-text ${isCopied ? 'fade-in' : 'fade-out'}`}>
+                {navigator.clipboard ? 'Link Copied!' : 'Not Supported'}
+              </span>
+            </button>
+            <button 
+              className="action-button add-to-cart-button" 
+              onClick={handleAddToCartClick} // Pass the event object implicitly
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
