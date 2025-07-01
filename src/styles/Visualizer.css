@@ -138,6 +138,5 @@
 
 /* We can add a smooth transition for when it appears */
 .lightbox-image {
-  /* ... keep existing styles ... */
   transition: opacity 0.3s ease-in-out;
 }

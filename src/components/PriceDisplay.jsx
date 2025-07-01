@@ -1,7 +1,11 @@
-import React from 'react';
-import '../styles/PriceDisplay.css';
+import React from "react";
+import "../styles/PriceDisplay.css";
 
-const PriceDisplay = React.memo(function PriceDisplay({ basePrice, sleeveCost, totalPrice }) {
+const PriceDisplay = React.memo(function PriceDisplay({
+  basePrice,
+  sleeveCost,
+  totalPrice,
+}) {
   const formatCurrency = (num) => `$${num.toFixed(2)}`;
 
   return (
@@ -12,7 +16,7 @@ const PriceDisplay = React.memo(function PriceDisplay({ basePrice, sleeveCost, t
           <span>Base Price</span>
           <span>{formatCurrency(basePrice)}</span>
         </div>
-        
+
         {/* Show the add-on cost for the sleeves */}
         <div className="price-row">
           <span>Sleeves Add-on</span>

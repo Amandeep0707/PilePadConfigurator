@@ -32,10 +32,9 @@ const generateLiftLengths = () => {
   // From 7' to 20' in 0.5' increments
   for (let feet = 7; feet <= 20; feet += 0.5) {
     const inches = feet * 12;
-    // Store as an object with a value (for internal use) and a label (for display)
     lengths.push({
-      value: `${inches}`, // The value is just the inches, e.g., "192"
-      label: `${inches}" (${feet.toFixed(1)}')`, // The label is for the user, e.g., "192" (16.0')"
+      value: `${inches}`,
+      label: `${inches}" (${feet.toFixed(1)}')`,
     });
   }
   return lengths;
@@ -44,7 +43,6 @@ const generateLiftLengths = () => {
 export const options = {
   trailer: {
     widths: ['2"', '2.5"', '3.0"', '3.5"', '4.0"', '4.5"'],
-    // Also convert trailer lengths to the new object format for consistency
     lengths: ['36"', '42"', '48"', '54"', '60"', '66"', '72"'].map((l) => ({
       value: l.replace('"', ""), // e.g., "36"
       label: l, // e.g., "36""
@@ -61,17 +59,10 @@ export const options = {
   ],
 };
 
-// This now calculates the ADD-ON cost of a single sleeve, not its total price.
-const BASE_SLEEVE_ADDON_COST = 10.0; // The cost for the smallest sleeve
+const BASE_SLEEVE_ADDON_COST = 10.0;
 const PRICE_PER_INCH_WIDTH = 10.0;
 const PRICE_PER_FOOT_LENGTH = 5.0;
 
-/**
- * Calculates the ADD-ON cost for a single sleeve based on its dimensions.
- * @param {string} width - e.g., "3.5\""
- * @param {string} length - e.g., "192"
- * @returns {number} The calculated add-on cost for one sleeve.
- */
 function calculateSleeveAddonCost(width, length) {
   const numericWidth = parseFloat(width);
   const numericLengthInches = parseInt(length);
@@ -86,5 +77,5 @@ function calculateSleeveAddonCost(width, length) {
 }
 
 export const pricing = {
-  calculateSleeveAddonCost, // Export the new function
+  calculateSleeveAddonCost,
 };

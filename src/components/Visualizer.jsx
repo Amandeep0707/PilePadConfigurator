@@ -1,30 +1,25 @@
-// src/components/Visualizer.jsx
+import React, { useState, useEffect, useMemo } from "react";
+import cld from "../cloudinary";
+import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
+import SkeletonLoader from "./SkeletonLoader";
+import "../styles/Visualizer.css";
 
-import React, { useState, useEffect, useMemo } from 'react';
-import cld from '../cloudinary';
-import { AdvancedImage, lazyload, responsive } from '@cloudinary/react';
-import SkeletonLoader from './SkeletonLoader';
-import '../styles/Visualizer.css';
-
-// ... (sanitizeForFilename function remains unchanged) ...
 function sanitizeForFilename(type, value) {
-  if (type === 'width') {
-    const sanitized = value.replace('"', '').replace('.', 'p');
-    return `w${sanitized.endsWith('p0') ? sanitized.slice(0, -2) : sanitized}`;
+  if (type === "width") {
+    const sanitized = value.replace('"', "").replace(".", "p");
+    return `w${sanitized.endsWith("p0") ? sanitized.slice(0, -2) : sanitized}`;
   }
-  if (type === 'length') {
-    // The value is already a clean string of inches, e.g., "192"
+  if (type === "length") {
     return `l${value}`;
   }
   return value;
 }
 
-
 function Visualizer({ environmentId, color, width, length }) {
   const [displayedImage, setDisplayedImage] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isEnlarged, setIsEnlarged] = useState(false);
-  
+
   // NEW: State specifically for the lightbox loader
   const [isLightboxLoading, setIsLightboxLoading] = useState(true);
 
@@ -33,11 +28,11 @@ function Visualizer({ environmentId, color, width, length }) {
       return `renders/${environmentId}_base`;
     }
 
-    const sanitizedWidth = sanitizeForFilename('width', width);
-    const sanitizedLength = sanitizeForFilename('length', length);
+    const sanitizedWidth = sanitizeForFilename("width", width);
+    const sanitizedLength = sanitizeForFilename("length", length);
     return `renders/${environmentId}_${color}_${sanitizedWidth}_${sanitizedLength}`;
   }, [environmentId, color, width, length]);
-  
+
   useEffect(() => {
     const cldImage = cld.image(targetImageId);
     const imageUrl = cldImage.toURL();
@@ -58,18 +53,19 @@ function Visualizer({ environmentId, color, width, length }) {
     };
 
     img.onerror = () => {
-      console.warn(`Render not found in Cloudinary: ${targetImageId}. Using fallback.`);
-      const fallbackImage = cld.image('renders/trailer_grey_w2_l36');
+      console.warn(
+        `Render not found in Cloudinary: ${targetImageId}. Using fallback.`
+      );
+      const fallbackImage = cld.image("renders/trailer_grey_w2_l36");
       setDisplayedImage(fallbackImage);
     };
   }, [targetImageId]);
-  
+
   useEffect(() => {
     if (displayedImage) {
       setIsTransitioning(false);
     }
   }, [displayedImage]);
-
 
   const handleImageClick = () => {
     if (!isTransitioning) {
@@ -83,11 +79,11 @@ function Visualizer({ environmentId, color, width, length }) {
     setIsEnlarged(false);
   };
 
-  // NEW: Event handlers for the enlarged image
+  // Event handlers for the enlarged image
   const handleLightboxImageLoad = () => {
     setIsLightboxLoading(false);
   };
-  
+
   const handleLightboxImageError = () => {
     // If high-res fails, we still want to hide the loader and show whatever we can
     setIsLightboxLoading(false);
@@ -98,12 +94,12 @@ function Visualizer({ environmentId, color, width, length }) {
     <>
       <div className="visualizer-wrapper" onClick={handleImageClick}>
         {isTransitioning && <SkeletonLoader />}
-        
+
         {displayedImage && (
           <AdvancedImage
             key={displayedImage.publicID}
             cldImg={displayedImage}
-            className={`visualizer-image ${isTransitioning ? '' : 'loaded'}`}
+            className={`visualizer-image ${isTransitioning ? "" : "loaded"}`}
             plugins={[lazyload(), responsive({ steps: 200 })]}
           />
         )}
@@ -121,13 +117,13 @@ function Visualizer({ environmentId, color, width, length }) {
           <AdvancedImage
             cldImg={displayedImage}
             // Add a class to hide the image until it's loaded
-            className={`lightbox-image ${isLightboxLoading ? 'loading' : ''}`}
+            className={`lightbox-image ${isLightboxLoading ? "loading" : ""}`}
             // Use the onLoad and onError event handlers
             onLoad={handleLightboxImageLoad}
             onError={handleLightboxImageError}
             plugins={[responsive({ steps: 400 })]}
           />
-          
+
           {/* Only show the close text after the image has loaded */}
           {!isLightboxLoading && (
             <span className="lightbox-close-text">Click anywhere to close</span>

@@ -117,7 +117,18 @@
   font-weight: 500;
   transition: all 0.2s ease-in-out;
 }
-.button-primary { background-color: var(--color-accent); color: white; }
-.button-primary:hover { background-color: var(--color-accent-hover); }
-.button-secondary { background-color: var(--color-background); color: var(--color-text); border: 1px solid var(--border-color); }
-.button-secondary:hover { background-color: var(--color-surface); }
+.button-primary {
+  background-color: var(--color-accent); color: white;
+}
+
+.button-primary:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.button-secondary {
+  background-color: var(--color-background); color: var(--color-text); border: 1px solid var(--border-color);
+}
+
+.button-secondary:hover {
+  background-color: var(--color-surface);
+}

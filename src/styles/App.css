@@ -2,7 +2,7 @@
 :root {
   --color-text: #212529;
   --color-background: #ffffff;
-  --color-surface: #f8f9fa; /* For card-like elements */
+  --color-surface: #f8f9fa;
   --color-primary: #007bff;
   --color-accent: #28a745;
   --color-accent-hover: #218838;
@@ -17,7 +17,7 @@
     --color-background: #202020;
     --color-surface: #1e1e1e;
     --color-primary: #4dabf7;
-    --color-accent: #28a745; /* Keeping green for high contrast CTA */
+    --color-accent: #28a745;
     --color-accent-hover: #34c458;
     --border-color: #495057;
     --shadow-color: rgba(255, 255, 255, 0.05);
