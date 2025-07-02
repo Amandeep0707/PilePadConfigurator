@@ -1,5 +1,3 @@
-// src/App.jsx
-
 import { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import "./styles/App.css";
@@ -27,9 +25,9 @@ function App() {
 
   const handleConfirmAddToCart = () => {
     if (!tempConfig) return;
-    // For future Zoho integration, tempConfig contains sku, variantId, etc.
+
     console.log("Submitting to backend:", tempConfig);
-    alert(`${tempConfig.variantName} has been added to your cart!`);
+    alert(`SKU ${tempConfig.sku} for ${tempConfig.poles} poles added to cart!`);
     setIsModalOpen(false);
   };
 
@@ -45,7 +43,6 @@ function App() {
         config={tempConfig}
         onConfirm={handleConfirmAddToCart}
       />
-
       <header className="app-header">
         <h1>Configurator WIP</h1>
         <p className="subtitle">PilePad Inc.</p>

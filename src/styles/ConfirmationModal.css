@@ -9,7 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000; /* Use a very high z-index */
+  z-index: 2000;
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -100,7 +100,6 @@
   color: var(--color-primary);
 }
 
-/* ... (keep .modal-buttons and button styles) ... */
 .modal-buttons {
   margin-top: 2rem;
   display: flex;

@@ -1,7 +1,4 @@
-// src/components/OptionsColumn.jsx
-
 import React from "react";
-import PriceDisplay from "./PriceDisplay";
 
 const OptionsColumn = React.memo(function OptionsColumn({
   options,

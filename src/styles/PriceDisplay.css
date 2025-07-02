@@ -8,6 +8,7 @@
 .price-total {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.75rem;
   font-size: 1rem;
 }
@@ -16,4 +17,16 @@
   font-weight: bold;
   font-size: 1.25rem;
   margin-top: 1rem;
+}
+
+.disabled-price {
+  color: #999;
+  font-style: italic;
+}
+
+.price-note {
+  font-size: 0.85rem;
+  text-align: right;
+  margin: 0;
+  opacity: 0.8;
 }

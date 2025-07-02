@@ -1,25 +1,28 @@
-// src/components/Visualizer.jsx
-
 import React, { useState, useEffect, useMemo } from "react";
 import cld from "../cloudinary";
 import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
 import SkeletonLoader from "./SkeletonLoader";
 import "../styles/Visualizer.css";
 
-function Visualizer({ environmentId, variant }) {
+function Visualizer({ environmentId, variant, color }) {
   const [displayedImage, setDisplayedImage] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isEnlarged, setIsEnlarged] = useState(false);
   const [isLightboxLoading, setIsLightboxLoading] = useState(true);
 
-  // The target image ID is now derived from the found variant object.
   const targetImageId = useMemo(() => {
-    if (variant && variant.imagePaths && variant.imagePaths[environmentId]) {
-      return variant.imagePaths[environmentId];
+    const imagePathKey = `${environmentId}${
+      color.charAt(0).toUpperCase() + color.slice(1)
+    }`;
+    // e.g., looks for 'lift2Black' in the imagePaths object
+    if (variant.imagePaths && variant.imagePaths[imagePathKey]) {
+      console.log("Selected Image: ", variant.imagePaths[imagePathKey]);
+      return variant.imagePaths[imagePathKey];
     }
-    // Return a path to a base image if no variant is selected (e.g., color is 'none').
+    // Fallback to a base image with no sleeves if no color/variant selected
+    console.warn("Selected Fallback image.");
     return `${environmentId}_base`;
-  }, [variant, environmentId]);
+  }, [variant, environmentId, color]);
 
   useEffect(() => {
     const cldImage = cld.image(targetImageId);
@@ -35,11 +38,10 @@ function Visualizer({ environmentId, variant }) {
 
     const img = new Image();
     img.src = imageUrl;
-
     img.onload = () => setDisplayedImage(cldImage);
     img.onerror = () => {
       console.warn(`Render not found: ${targetImageId}. Using fallback.`);
-      setDisplayedImage(cld.image("Fallback"));
+      setDisplayedImage(cld.image("fallback"));
     };
   }, [targetImageId]);
 
@@ -71,7 +73,6 @@ function Visualizer({ environmentId, variant }) {
           />
         )}
       </div>
-
       {isEnlarged && (
         <div className="lightbox-overlay" onClick={handleCloseEnlarged}>
           {isLightboxLoading && (

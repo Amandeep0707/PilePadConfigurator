@@ -1,12 +1,4 @@
-// src/components/Configurator.jsx
-
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-} from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useSearchParams, useParams } from "react-router-dom";
 import { environments, options, findVariant } from "../data/configProcessor";
 import Visualizer from "./Visualizer";
@@ -27,13 +19,12 @@ function Configurator({ onBack, onOpenModal }) {
     return <p>Loading environment...</p>;
   }
 
-  // A single state object for the entire configuration.
   const [config, setConfig] = useState(() => {
     const initialWidth =
       parseFloat(searchParams.get("width")) || options.widths[0].value;
     const initialLength =
       parseFloat(searchParams.get("length")) || options.lengths[0].value;
-    const initialColor = searchParams.get("color") || options.colors[0].id; // Default to 'none'
+    const initialColor = searchParams.get("color") || options.colors[0].id;
     return {
       width: initialWidth,
       length: initialLength,
@@ -41,23 +32,21 @@ function Configurator({ onBack, onOpenModal }) {
     };
   });
 
-  // Find the matching product variant based on the current config.
-  const foundVariant = useMemo(() => findVariant(config), [config]);
+  const foundVariant = useMemo(
+    () => findVariant(config),
+    [config.width, config.length]
+  );
 
-  // Derived state for the total price.
   const totalPrice = useMemo(() => {
-    // The price is based on the found variant, multiplied by the number of poles.
     if (foundVariant) {
       return foundVariant.price * environment.poles;
     }
-    // If no variant (e.g., color is 'none'), there is no cost for sleeves.
     return 0;
-  }, [foundVariant, environment.poles]);
+  }, [foundVariant, config.color, environment.poles]);
 
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeoutRef = useRef(null);
 
-  // Effect to sync state back to URL query parameters.
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("width", config.width);
@@ -82,14 +71,13 @@ function Configurator({ onBack, onOpenModal }) {
 
   const handleAddToCartClick = (event) => {
     event.stopPropagation();
-    if (!foundVariant) return; // Prevent adding to cart if no valid variant is selected
 
     onOpenModal({
-      // Pass all relevant data to the modal, including for Zoho
-      ...foundVariant, // This includes sku, price, variantName, etc.
+      ...foundVariant,
       environmentName: environment.name,
       poles: environment.poles,
       totalPrice: totalPrice,
+      selectedColor: config.color,
     });
   };
 
@@ -98,28 +86,21 @@ function Configurator({ onBack, onOpenModal }) {
       <button onClick={onBack} className="back-button">
         ← Change Environment
       </button>
-
       <div className="configurator-main">
         <div className="visualizer-column">
           <Visualizer
             environmentId={environment.id}
-            variant={foundVariant} // Pass the whole variant object
+            variant={foundVariant}
+            color={config.color}
           />
         </div>
-
         <div className="options-panel-wrapper">
           <OptionsColumn
             options={options}
             config={config}
             onConfigChange={handleConfigChange}
-            priceDisplay={
-              <PriceDisplay
-                variantPrice={foundVariant ? foundVariant.price : 0}
-                totalPrice={totalPrice}
-              />
-            }
+            priceDisplay={<PriceDisplay totalPrice={totalPrice} />}
           />
-
           <div className="action-buttons-container">
             <button
               className={`action-button share-button ${
@@ -140,9 +121,7 @@ function Configurator({ onBack, onOpenModal }) {
             </button>
             <button
               className="action-button add-to-cart-button"
-              onClick={handleAddToCartClick}
-              disabled={!foundVariant} // Disable if no valid variant is selected
-            >
+              onClick={handleAddToCartClick}>
               Add to Cart
             </button>
           </div>

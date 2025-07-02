@@ -3,7 +3,6 @@
   max-width: 1600px;
   display: flex;
   flex-direction: column;
-  /* Make the container take up all available vertical space */
   flex-grow: 1; 
   height: 100%;
 }
@@ -28,10 +27,9 @@
 }
 
 .visualizer-column {
-  /* The visualizer will take up available space, but not shrink below a certain point */
   flex-grow: 1;
   flex-shrink: 1;
-  min-height: 300px; /* Minimum height on small screens */
+  min-height: 100px;
   margin-bottom: 2rem;
 }
 
@@ -50,7 +48,7 @@
 @media (max-width: 1024px) {
   .configurator-main {
       grid-template-columns: 1fr;
-      gap: 2.5rem;
+      gap: 1rem;
   }
 }
 
@@ -72,14 +70,12 @@
 
 .options-grid {
   display: grid;
-  /* Create responsive columns that are at least 120px wide */
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   gap: 0.75rem;
 }
 
 .option-button {
-  /* No longer need flex-shrink or white-space */
-  padding: 0.75rem 1rem; /* Adjust padding slightly */
+  padding: 0.5rem 0.5rem;
   border: 1px solid var(--border-color);
   background-color: var(--color-background);
   color: var(--color-text);

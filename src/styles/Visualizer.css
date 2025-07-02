@@ -1,5 +1,3 @@
-/* src/styles/Visualizer.css */
-
 .visualizer-wrapper {
   position: relative;
   width: 100%;
@@ -11,7 +9,6 @@
   cursor: zoom-in;
 }
 
-/* Base style for the image - always in the layout */
 .visualizer-image {
   position: absolute;
   top: 0;
@@ -20,18 +17,15 @@
   height: 100%;
   object-fit: cover;
   
-  /* Start fully transparent */
   opacity: 0;
-  /* Make the transition smooth */
+
   transition: opacity 0.4s ease-in-out;
 }
 
-/* When the 'loaded' class is added, fade the image in */
 .visualizer-image.loaded {
   opacity: 1;
 }
 
-/* Base style for the loader - always in the layout */
 .loader-overlay {
   position: absolute;
   top: 0;
@@ -43,19 +37,16 @@
   align-items: center;
   z-index: 10;
   
-  /* Start fully transparent */
   opacity: 0;
   background-color: rgba(0, 0, 0, 0.05);
   transition: opacity 0.3s ease-in-out;
 }
 
-/* When the loader should be visible, fade it in */
 .loader-overlay.visible {
   opacity: 1;
 }
 
 .spinner {
-  /* Spinner styles remain the same */
   width: 50px;
   height: 50px;
   border: 5px solid rgba(128, 128, 128, 0.3);
@@ -69,8 +60,6 @@
     transform: rotate(360deg);
   }
 }
-
-/* --- Lightbox Styles (Unchanged) --- */
 
 .lightbox-overlay {
   position: fixed;
@@ -123,20 +112,17 @@
 }
 
 .lightbox-loader {
-  /* This ensures the loader is positioned absolutely within the lightbox overlay */
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1001; /* Must be on top of the lightbox image */
+  z-index: 1001;
 }
 
-/* Hide the lightbox image while it's loading to prevent showing a broken icon */
 .lightbox-image.loading {
   opacity: 0;
 }
 
-/* We can add a smooth transition for when it appears */
 .lightbox-image {
   transition: opacity 0.3s ease-in-out;
 }

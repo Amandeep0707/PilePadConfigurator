@@ -1,6 +1,4 @@
-// src/components/ConfirmationModal.jsx
-
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import "../styles/ConfirmationModal.css";
 
@@ -26,10 +24,19 @@ const ConfirmationModal = ({ isOpen, closeModal, config, onConfirm }) => {
             <div className="modal-summary">
               <p>Please review the items you are adding to your cart:</p>
               <div className="summary-item">
-                <span className="summary-label">{config.variantName}</span>
+                <span className="summary-label">
+                  {config.environmentName} ({config.poles} Poles)
+                </span>
                 <span className="summary-value">
                   {config.poles} x {formatCurrency(config.price)}
                 </span>
+              </div>
+              <div className="summary-item summary-addon">
+                <span className="summary-label">
+                  Sleeves: {config.width} / {config.length} /{" "}
+                  <span className="capitalize">{config.selectedColor}</span>
+                </span>
+                <span className="summary-value">SKU: {config.sku}</span>
               </div>
             </div>
             <div className="modal-total-section">
