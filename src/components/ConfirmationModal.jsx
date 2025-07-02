@@ -33,8 +33,8 @@ const ConfirmationModal = ({ isOpen, closeModal, config, onConfirm }) => {
               </div>
               <div className="summary-item summary-addon">
                 <span className="summary-label">
-                  Sleeves: {config.width} / {config.length} /{" "}
-                  <span className="capitalize">{config.selectedColor}</span>
+                  Configuration: {config.width}, {config.length},{" "}
+                  {config.selectedColor.toUpperCase()}
                 </span>
                 <span className="summary-value">SKU: {config.sku}</span>
               </div>
