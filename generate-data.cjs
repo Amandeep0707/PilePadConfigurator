@@ -6,27 +6,36 @@ const inputFilePath = path.join(__dirname, "pricing_data.csv");
 const outputFilePath = path.join(__dirname, "src/data", "pricing_data.json");
 
 const productsData = {};
+const variants = [];
 
-const environments = {
-  lift2: {
-    id: "lift2",
-    name: "2 Pole Boat Lift",
-    image: "/assets/2_pole_lift.jpeg",
-    poles: 2,
-    variants: [],
-    optionValues: { widths: new Set(), lengths: new Set(), colors: new Set() },
-  },
-  lift4: {
-    id: "lift4",
-    name: "4 Pole Boat Lift",
-    image: "/assets/4_pole_lift.jpeg",
-    poles: 4,
-    variants: [],
-    optionValues: { widths: new Set(), lengths: new Set(), colors: new Set() },
-  },
-};
+// --- NEW: Define the environments we need to generate image paths for ---
+const ENVIRONMENTS = ["lift2", "lift4"];
+const IMAGE_EXTENSION = "jpg"; // Set the image extension here
 
 console.log("Starting data conversion from CSV...");
+
+/**
+ * --- NEW: Helper function to sanitize values for the filename ---
+ * This function takes a type ('width' or 'length') and a value
+ * and returns the formatted string as per your naming convention.
+ * @param {string} type - 'width' or 'length'
+ * @param {string} value - The raw value, e.g., "2.5"" or "36.0""
+ * @returns {string} The sanitized part of the filename, e.g., "w2p5" or "l36"
+ */
+function sanitizeForFilename(type, value) {
+  if (type === "width") {
+    // Converts "2.5"" -> "w2p5" or "2.0"" -> "w2"
+    const sanitized = String(value).replace('"', "").replace(".", "p");
+    const final = sanitized.endsWith("p0") ? sanitized.slice(0, -2) : sanitized;
+    return `w${final}`;
+  }
+  if (type === "length") {
+    // Converts "36.0"" -> "l36"
+    const intValue = parseInt(value, 10);
+    return `l${intValue}`;
+  }
+  return value;
+}
 
 fs.createReadStream(inputFilePath)
   .pipe(csv({ headers: false }))
@@ -38,8 +47,11 @@ fs.createReadStream(inputFilePath)
     const salePriceRaw = row["4"];
     const lengthRaw = row["5"];
     const widthRaw = row["6"];
-    const colorRaw = row["12"];
-    const description = row["13"];
+    const colorRaw = row["11"];
+    const description = row["12"];
+    const shop = row["16"];
+    const flatRateRaw = row["17"];
+    const variantId = row["25"];
 
     // Skip any rows that don't seem to be valid PolePads
     if (productName !== "PolePad" || !variantName) {
@@ -51,58 +63,68 @@ fs.createReadStream(inputFilePath)
       parseFloat(String(salePriceRaw).replace(/[^0-9.-]+/g, "")) || 0;
     const retailPrice =
       parseFloat(String(retailPriceRaw).replace(/[^0-9.-]+/g, "")) || salePrice;
+    const flatRate =
+      parseFloat(String(flatRateRaw).replace(/[^0-g.-]+/g, "")) || 0;
     const color = String(colorRaw).trim().toLowerCase() || "none";
-    const width = `${parseFloat(widthRaw).toFixed(1)}"`; // Format to "X.X""
-    const length = String(lengthRaw).trim();
 
-    if (sku && salePrice > 0 && width && length && color) {
+    // Normalize width and length strings
+    const width = `${parseFloat(widthRaw).toFixed(1)}"`; // Format to "X.X""
+    const length = `${parseFloat(lengthRaw).toFixed(1)}"`; // Format to "X.X""
+
+    if (
+      sku &&
+      salePrice > 0 &&
+      width &&
+      length &&
+      color &&
+      (color === "black" || color === "grey")
+    ) {
+      // --- NEW: Generate Image Paths ---
+      const sanitizedWidth = sanitizeForFilename("width", width);
+      const sanitizedLength = sanitizeForFilename("length", length);
+
+      const imagePaths = {};
+      for (const env of ENVIRONMENTS) {
+        // Construct the full Cloudinary Public ID without the folder
+        const publicId = `renders/${env}_${color}_${sanitizedWidth}_${sanitizedLength}`;
+        // Store it in the imagePaths object. We don't add the extension here,
+        // as Cloudinary handles that. The React app will add the folder.
+        imagePaths[env] = publicId;
+      }
+
       const variant = {
         sku,
         variantName,
-        description,
         price: salePrice,
         retailPrice,
         width,
         length,
         color,
+        description,
+        shop,
+        flatRate,
+        variantId,
+        imagePaths,
       };
 
-      environments.lift2.variants.push(variant);
-      environments.lift4.variants.push(variant);
-
-      // Collect unique option values for both
-      environments.lift2.optionValues.widths.add(width);
-      environments.lift2.optionValues.lengths.add(length);
-      environments.lift2.optionValues.colors.add(color);
-
-      environments.lift4.optionValues.widths.add(width);
-      environments.lift4.optionValues.lengths.add(length);
-      environments.lift4.optionValues.colors.add(color);
+      variants.push(variant);
     }
   })
   .on("end", () => {
     console.log("CSV file processed. Finalizing JSON structure...");
 
-    for (const envId in environments) {
-      const env = environments[envId];
-      const options = env.optionValues;
+    // This loop structure is from your original script. It assigns numeric keys.
+    for (const varId in variants) {
+      productsData[varId] = variants[varId];
+    }
 
-      env.options = {
-        widths: Array.from(options.widths).sort(
-          (a, b) => parseFloat(a) - parseFloat(b)
-        ),
-        lengths: Array.from(options.lengths)
-          .sort((a, b) => parseInt(a) - parseInt(b))
-          .map((l) => ({ value: l, label: `${l}"` })),
-        colors: Array.from(options.colors).sort((a, b) =>
-          a === "black" ? -1 : 1
-        ),
-      };
-
-      delete env.optionValues;
-      productsData[envId] = env;
+    // Ensure the output directory exists
+    const outputDir = path.dirname(outputFilePath);
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
     }
 
     fs.writeFileSync(outputFilePath, JSON.stringify(productsData, null, 2));
     console.log(`✅ Success! Data has been written to ${outputFilePath}`);
+    console.log(`Total variants processed: ${variants.length}`);
   });

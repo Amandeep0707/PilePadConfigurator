@@ -7,7 +7,7 @@ OUTPUT_DIR = 'renders'
 PLACEHOLDER_IMAGE_NAME = 'placeholder.jpg'
 
 # This data is replicated from src/data/configOptions.js
-ENVIRONMENTS = ['trailer', 'lift2', 'lift4']
+ENVIRONMENTS = ['lift2', 'lift4']
 COLORS = ['none', 'black', 'grey']
 
 def generate_lift_lengths():
@@ -17,7 +17,6 @@ def generate_lift_lengths():
     for i in range(7 * 2, 20 * 2 + 1):
         feet = i / 2.0
         inches = int(feet * 12)
-        # Format: "144\" (12.0')"
         lengths.append(f'{inches}" ({feet:.1f}\')')
     return lengths
 
