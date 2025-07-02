@@ -1,3 +1,5 @@
+// src/components/Configurator.jsx
+
 import React, {
   useState,
   useEffect,
@@ -6,45 +8,32 @@ import React, {
   useRef,
 } from "react";
 import { useSearchParams, useParams } from "react-router-dom";
-import { options, pricing, environments } from "../data/configOptions";
+import { environments, options, findVariant } from "../data/configProcessor";
 import Visualizer from "./Visualizer";
 import OptionsColumn from "./OptionsColumn";
 import PriceDisplay from "./PriceDisplay";
 import "../styles/Configurator.css";
 
-const sanitize = (val) => val.replace(/[^a-zA-Z0-9-.]/g, "");
-
 function Configurator({ onBack, onOpenModal }) {
   const { environmentId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // The environment is now derived directly and memoized. It's the source of truth.
   const environment = useMemo(
     () => environments.find((env) => env.id === environmentId),
     [environmentId]
   );
 
-  // If the URL is invalid or still loading, show a fallback.
   if (!environment) {
     return <p>Loading environment...</p>;
   }
 
-  const isLift = environment.id.includes("lift");
-  const configOptions = isLift ? options.lift : options.trailer;
-
   // A single state object for the entire configuration.
   const [config, setConfig] = useState(() => {
-    // This initializer function runs only once, synchronously, before the first render.
     const initialWidth =
-      configOptions.widths.find(
-        (w) => sanitize(w) === searchParams.get("width")
-      ) || configOptions.widths[0];
+      parseFloat(searchParams.get("width")) || options.widths[0].value;
     const initialLength =
-      configOptions.lengths.find((l) => l.value === searchParams.get("length"))
-        ?.value || (isLift ? "144" : configOptions.lengths[0].value);
-    const initialColor =
-      options.colors.find((c) => c.id === searchParams.get("color"))?.id ||
-      options.colors[1].id;
+      parseFloat(searchParams.get("length")) || options.lengths[0].value;
+    const initialColor = searchParams.get("color") || options.colors[0].id; // Default to 'none'
     return {
       width: initialWidth,
       length: initialLength,
@@ -52,55 +41,38 @@ function Configurator({ onBack, onOpenModal }) {
     };
   });
 
-  // Derived state for the total price, memoized to recalculate only when inputs change.
-  const totalPrice = useMemo(() => {
-    let finalTotal = environment.basePrice;
-    if (config.color !== "none") {
-      const sleeveCost =
-        pricing.calculateSleeveAddonCost(config.width, config.length) *
-        environment.poles;
-      finalTotal += sleeveCost;
-    }
-    return finalTotal;
-  }, [config.width, config.length, config.color, environment]);
+  // Find the matching product variant based on the current config.
+  const foundVariant = useMemo(() => findVariant(config), [config]);
 
-  // UI state for the copy button.
+  // Derived state for the total price.
+  const totalPrice = useMemo(() => {
+    // The price is based on the found variant, multiplied by the number of poles.
+    if (foundVariant) {
+      return foundVariant.price * environment.poles;
+    }
+    // If no variant (e.g., color is 'none'), there is no cost for sleeves.
+    return 0;
+  }, [foundVariant, environment.poles]);
+
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeoutRef = useRef(null);
 
-  // Effect to sync the state back to the URL's query parameters.
+  // Effect to sync state back to URL query parameters.
   useEffect(() => {
     const params = new URLSearchParams();
-    params.set("width", sanitize(config.width));
+    params.set("width", config.width);
     params.set("length", config.length);
     params.set("color", config.color);
     setSearchParams(params, { replace: true });
   }, [config, setSearchParams]);
 
-  // Use useCallback for handlers to ensure they are stable and don't cause re-renders.
-  // We use the functional form of setState (prev => ...) so we don't need 'config' in the dependency array.
-  const handleWidthChange = useCallback(
-    (newWidth) => setConfig((prev) => ({ ...prev, width: newWidth })),
-    []
-  );
-  const handleLengthChange = useCallback(
-    (newLength) => setConfig((prev) => ({ ...prev, length: newLength })),
-    []
-  );
-  const handleColorChange = useCallback(
-    (newColor) => setConfig((prev) => ({ ...prev, color: newColor })),
-    []
-  );
+  const handleConfigChange = useCallback((key, value) => {
+    setConfig((prev) => ({ ...prev, [key]: value }));
+  }, []);
 
   const handleCopyLink = (event) => {
     event.stopPropagation();
     if (isCopied) return;
-    if (!navigator.clipboard) {
-      setIsCopied(true);
-      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-      copyTimeoutRef.current = setTimeout(() => setIsCopied(false), 3000);
-      return;
-    }
     navigator.clipboard.writeText(window.location.href).then(() => {
       setIsCopied(true);
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
@@ -110,16 +82,13 @@ function Configurator({ onBack, onOpenModal }) {
 
   const handleAddToCartClick = (event) => {
     event.stopPropagation();
-    const lengthLabel =
-      configOptions.lengths.find((l) => l.value === config.length)?.label ||
-      config.length;
+    if (!foundVariant) return; // Prevent adding to cart if no valid variant is selected
+
     onOpenModal({
-      environment: environment.name,
-      basePrice: environment.basePrice,
+      // Pass all relevant data to the modal, including for Zoho
+      ...foundVariant, // This includes sku, price, variantName, etc.
+      environmentName: environment.name,
       poles: environment.poles,
-      width: config.width,
-      length: lengthLabel,
-      color: config.color,
       totalPrice: totalPrice,
     });
   };
@@ -134,29 +103,18 @@ function Configurator({ onBack, onOpenModal }) {
         <div className="visualizer-column">
           <Visualizer
             environmentId={environment.id}
-            color={config.color}
-            width={config.width}
-            length={config.length}
+            variant={foundVariant} // Pass the whole variant object
           />
         </div>
 
         <div className="options-panel-wrapper">
           <OptionsColumn
-            configOptions={configOptions}
-            width={config.width}
-            length={config.length}
-            color={config.color}
-            onWidthChange={handleWidthChange}
-            onLengthChange={handleLengthChange}
-            onColorChange={handleColorChange}
+            options={options}
+            config={config}
+            onConfigChange={handleConfigChange}
             priceDisplay={
               <PriceDisplay
-                basePrice={environment.basePrice}
-                sleeveCost={
-                  config.color === "none"
-                    ? 0
-                    : totalPrice - environment.basePrice
-                }
+                variantPrice={foundVariant ? foundVariant.price : 0}
                 totalPrice={totalPrice}
               />
             }
@@ -167,7 +125,7 @@ function Configurator({ onBack, onOpenModal }) {
               className={`action-button share-button ${
                 isCopied ? "copied" : ""
               }`}
-              onClick={handleCopyLink} // Pass the event object implicitly
+              onClick={handleCopyLink}
               style={{ position: "relative" }}>
               <span
                 className={`button-text ${isCopied ? "fade-out" : "fade-in"}`}>
@@ -177,12 +135,14 @@ function Configurator({ onBack, onOpenModal }) {
                 className={`button-text copied-text ${
                   isCopied ? "fade-in" : "fade-out"
                 }`}>
-                {navigator.clipboard ? "Link Copied!" : "Not Supported"}
+                Link Copied!
               </span>
             </button>
             <button
               className="action-button add-to-cart-button"
-              onClick={handleAddToCartClick}>
+              onClick={handleAddToCartClick}
+              disabled={!foundVariant} // Disable if no valid variant is selected
+            >
               Add to Cart
             </button>
           </div>

@@ -1,21 +1,18 @@
+// src/components/OptionsColumn.jsx
+
 import React from "react";
 import PriceDisplay from "./PriceDisplay";
-import { options } from "../data/configOptions";
 
 const OptionsColumn = React.memo(function OptionsColumn({
-  configOptions,
-  width,
-  length,
-  color,
-  onWidthChange,
-  onLengthChange,
-  onColorChange,
+  options,
+  config,
+  onConfigChange,
   priceDisplay,
 }) {
   const handleColorKeyDown = (e, colorId) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      onColorChange(colorId);
+      onConfigChange("color", colorId);
     }
   };
 
@@ -29,11 +26,13 @@ const OptionsColumn = React.memo(function OptionsColumn({
           {options.colors.map((c) => (
             <div
               key={c.id}
-              className={`color-option ${color === c.id ? "selected" : ""}`}
-              onClick={() => onColorChange(c.id)}
+              className={`color-option ${
+                config.color === c.id ? "selected" : ""
+              }`}
+              onClick={() => onConfigChange("color", c.id)}
               onKeyDown={(e) => handleColorKeyDown(e, c.id)}
               role="radio"
-              aria-checked={color === c.id}
+              aria-checked={config.color === c.id}
               tabIndex="0">
               <div className={`color-swatch ${c.id}`} />
               <span>{c.name}</span>
@@ -42,32 +41,32 @@ const OptionsColumn = React.memo(function OptionsColumn({
         </div>
       </div>
 
-      {/* --- UPDATED: Width Buttons with Grid Layout --- */}
       <div className="option-group">
         <label>Width</label>
         <div className="options-grid">
-          {configOptions.widths.map((w) => (
+          {options.widths.map((w) => (
             <button
-              key={w}
-              className={`option-button ${width === w ? "selected" : ""}`}
-              onClick={() => onWidthChange(w)}>
-              {w}
+              key={w.value}
+              className={`option-button ${
+                config.width === w.value ? "selected" : ""
+              }`}
+              onClick={() => onConfigChange("width", w.value)}>
+              {w.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* --- UPDATED: Length Buttons with Grid Layout --- */}
       <div className="option-group">
         <label>Length</label>
         <div className="options-grid">
-          {configOptions.lengths.map((l) => (
+          {options.lengths.map((l) => (
             <button
               key={l.value}
               className={`option-button ${
-                length === l.value ? "selected" : ""
+                config.length === l.value ? "selected" : ""
               }`}
-              onClick={() => onLengthChange(l.value)}>
+              onClick={() => onConfigChange("length", l.value)}>
               {l.label}
             </button>
           ))}

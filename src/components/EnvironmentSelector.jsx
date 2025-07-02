@@ -1,5 +1,5 @@
 import React from "react";
-import { environments } from "../data/configOptions";
+import { environments } from "../data/configProcessor";
 import "../styles/EnvironmentSelector.css";
 
 function EnvironmentSelector({ onSelect }) {

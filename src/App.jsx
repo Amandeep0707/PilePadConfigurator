@@ -1,20 +1,17 @@
 // src/App.jsx
 
-import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./styles/App.css";
-import { environments } from "./data/configOptions";
 import EnvironmentSelector from "./components/EnvironmentSelector";
 import Configurator from "./components/Configurator";
-import SimpleModal from "./components/ConfirmationModal";
+import ConfirmationModal from "./components/ConfirmationModal";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tempConfig, setTempConfig] = useState(null);
-
   const navigate = useNavigate();
 
-  // This logic is now purely for navigation, not for passing props.
   const handleEnvironmentSelect = (environment) => {
     navigate(`/${environment.id}`);
   };
@@ -27,19 +24,22 @@ function App() {
     setTempConfig(config);
     setIsModalOpen(true);
   };
+
   const handleConfirmAddToCart = () => {
     if (!tempConfig) return;
+    // For future Zoho integration, tempConfig contains sku, variantId, etc.
     console.log("Submitting to backend:", tempConfig);
-    alert(`${tempConfig.environment} has been added to your cart!`);
+    alert(`${tempConfig.variantName} has been added to your cart!`);
     setIsModalOpen(false);
   };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
   return (
     <>
-      <SimpleModal
+      <ConfirmationModal
         isOpen={isModalOpen}
         closeModal={handleCloseModal}
         config={tempConfig}
