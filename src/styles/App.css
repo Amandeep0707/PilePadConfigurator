@@ -48,6 +48,7 @@ body {
   text-align: center;
   padding: 1rem 0;
   border-bottom: 1px solid var(--border-color);
+  font-family: "Poppins", sans-serif;
 }
 
 .app-header h1 {
@@ -60,6 +61,7 @@ body {
   font-size: 1.25rem;
   font-weight: 300;
   color: var(--color-text);
+  font-family: "Poppins", sans-serif;
 }
 
 .app-main {
@@ -78,4 +80,5 @@ body {
   margin-top: auto;
   font-size: 0.9rem;
   color: #777;
+  font-family: "Poppins", sans-serif;
 }

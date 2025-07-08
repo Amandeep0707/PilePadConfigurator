@@ -51,7 +51,7 @@ function App() {
         onConfirm={handleConfirmAddToCart}
       />
       <header className="app-header">
-        <h1>Configurator WIP</h1>
+        <h1>Configurator</h1>
         <p className="subtitle">PilePad Inc.</p>
       </header>
       <main className="app-main">

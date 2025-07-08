@@ -1,8 +1,8 @@
 .price-container {
-  margin-top: 2rem;
-  /* padding-top: 1.5rem; */
+  margin-top: 3rem;
   border-top: 1px solid var(--border-color);
   border-radius: 2rem;
+  padding-bottom: 0.5rem;
 }
 
 .price-breakdown,
@@ -10,7 +10,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   font-size: 1rem;
   margin-left: 1.5rem;
   margin-right: 1.5rem;
@@ -19,7 +20,6 @@
 .price-total {
   font-weight: bold;
   font-size: 1.25rem;
-  margin-top: 1rem;
 }
 
 .disabled-price {

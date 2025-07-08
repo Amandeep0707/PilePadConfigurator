@@ -8,6 +8,7 @@
 }
 
 .back-button {
+  font-family: "Poppins", sans-serif;
   background: none;
   border: none;
   color: var(--color-primary);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import cld from "../cloudinary";
 import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
 import SkeletonLoader from "./SkeletonLoader";
@@ -14,12 +14,10 @@ function Visualizer({ environmentId, variant, color }) {
     const imagePathKey = `${environmentId}${
       color.charAt(0).toUpperCase() + color.slice(1)
     }`;
-    // e.g., looks for 'lift2Black' in the imagePaths object
     if (variant.imagePaths && variant.imagePaths[imagePathKey]) {
       console.log("Selected Image: ", variant.imagePaths[imagePathKey]);
       return variant.imagePaths[imagePathKey];
     }
-    // Fallback to a base image with no sleeves if no color/variant selected
     console.warn("Selected Fallback image.");
     return "fallback";
   }, [variant, environmentId, color]);
