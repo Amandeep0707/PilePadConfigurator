@@ -3,7 +3,6 @@ import "../styles/EnvironmentSelector.css";
 import cld from "../cloudinary";
 
 function EnvironmentSelector({ onSelect }) {
-  console.log(cld.image(environments[0].image).toURL());
   return (
     <div className="env-selector-container">
       <h2>Choose Your Environment</h2>

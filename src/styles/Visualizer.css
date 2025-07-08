@@ -5,8 +5,24 @@
   background-color: var(--color-surface);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 0px 20px var(--shadow-color);
+  box-shadow: 0 0px 10px var(--shadow-color);
   cursor: zoom-in;
+  
+  /* Ensure it maintains size when sticky */
+  min-height: 200px;
+}
+
+/* Responsive adjustments for sticky visualizer */
+@media (max-width: 768px) {
+  .visualizer-wrapper {
+    min-height: 150px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .visualizer-wrapper {
+    min-height: 300px;
+  }
 }
 
 .visualizer-image {
@@ -18,7 +34,6 @@
   object-fit: cover;
   
   opacity: 0;
-
   transition: opacity 0.4s ease-in-out;
 }
 

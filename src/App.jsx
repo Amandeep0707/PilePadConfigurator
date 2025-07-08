@@ -35,6 +35,13 @@ function App() {
     setIsModalOpen(false);
   };
 
+  const date = new Date(); // July is month 6 (0-indexed)
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+  });
+  const formattedDate = formatter.format(date);
+
   return (
     <>
       <ConfirmationModal
@@ -65,7 +72,7 @@ function App() {
         </Routes>
       </main>
       <footer className="app-footer">
-        <p>May 2025</p>
+        <p>{formattedDate}</p>
       </footer>
     </>
   );
