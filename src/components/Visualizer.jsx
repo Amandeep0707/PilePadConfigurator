@@ -21,7 +21,7 @@ function Visualizer({ environmentId, variant, color }) {
     }
     // Fallback to a base image with no sleeves if no color/variant selected
     console.warn("Selected Fallback image.");
-    return `${environmentId}_base`;
+    return "fallback";
   }, [variant, environmentId, color]);
 
   useEffect(() => {

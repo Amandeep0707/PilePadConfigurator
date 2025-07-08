@@ -1,7 +1,9 @@
 import { environments } from "../data/configProcessor";
 import "../styles/EnvironmentSelector.css";
+import cld from "../cloudinary";
 
 function EnvironmentSelector({ onSelect }) {
+  console.log(cld.image(environments[0].image).toURL());
   return (
     <div className="env-selector-container">
       <h2>Choose Your Environment</h2>
@@ -13,7 +15,7 @@ function EnvironmentSelector({ onSelect }) {
             onClick={() => onSelect(env)}
             tabIndex="0"
             role="button">
-            <img src={env.image} alt={env.name} />
+            <img src={cld.image(env.image).toURL()} alt={env.name} />
             <h3>{env.name}</h3>
           </div>
         ))}

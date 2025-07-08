@@ -1,6 +1,4 @@
 import rawPricingData from "./pricing_data.json";
-import selectLift2Img from "../assets/lift2_base.jpg";
-import selectLift4Img from "../assets/lift4_base.jpg";
 
 function processData() {
   const variants = Object.values(rawPricingData);
@@ -29,13 +27,13 @@ function processData() {
       id: "lift2",
       name: "2 Pole Boat Lift",
       poles: 2,
-      image: selectLift2Img,
+      image: "lift2_base",
     },
     {
       id: "lift4",
       name: "4 Pole Boat Lift",
       poles: 4,
-      image: selectLift4Img,
+      image: "lift4_base",
     },
   ];
 
