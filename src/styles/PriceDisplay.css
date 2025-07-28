@@ -20,6 +20,9 @@
 .price-total {
   font-weight: bold;
   font-size: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .disabled-price {
@@ -32,4 +35,22 @@
   text-align: right;
   margin: 0;
   opacity: 0.8;
+}
+
+.price-values {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.retail-price {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--color-text);
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+.final-price {
+  color: var(--color-text);
 }

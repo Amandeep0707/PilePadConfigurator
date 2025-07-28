@@ -4,6 +4,7 @@ const OptionsColumn = React.memo(function OptionsColumn({
   options,
   config,
   onConfigChange,
+  description,
   priceDisplay,
 }) {
   const handleColorKeyDown = (e, colorId) => {
@@ -17,8 +18,22 @@ const OptionsColumn = React.memo(function OptionsColumn({
     <div className="options-column">
       <h2>Create Your PolePads</h2>
 
+      {description && (
+        <div className="option-group">
+          <label>Description</label>
+          <div className="product-description">{description.trim()}</div>
+        </div>
+      )}
+
       <div className="option-group">
-        <label>Sleeves Color</label>
+        <div className="label-container">
+          <label>Sleeves Color</label>
+          <button
+            className={`toggle-button ${config.showBoat ? "active" : ""}`}
+            onClick={() => onConfigChange("showBoat", !config.showBoat)}>
+            Show Boat
+          </button>
+        </div>
         <div className="color-selector">
           {options.colors.map((c) => (
             <div
@@ -53,7 +68,6 @@ const OptionsColumn = React.memo(function OptionsColumn({
           ))}
         </div>
       </div>
-
       <div className="option-group">
         <label>Length</label>
         <div className="options-grid">

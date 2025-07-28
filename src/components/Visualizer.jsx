@@ -4,23 +4,28 @@ import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
 import SkeletonLoader from "./SkeletonLoader";
 import "../styles/Visualizer.css";
 
-function Visualizer({ environmentId, variant, color }) {
+function Visualizer({ environmentId, variant, color, showBoat }) {
   const [displayedImage, setDisplayedImage] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isEnlarged, setIsEnlarged] = useState(false);
   const [isLightboxLoading, setIsLightboxLoading] = useState(true);
 
   const targetImageId = useMemo(() => {
-    const imagePathKey = `${environmentId}${
-      color.charAt(0).toUpperCase() + color.slice(1)
-    }`;
-    if (variant.imagePaths && variant.imagePaths[imagePathKey]) {
-      console.log("Selected Image: ", variant.imagePaths[imagePathKey]);
-      return variant.imagePaths[imagePathKey];
+    // If we don't have a valid variant yet, return a fallback.
+    if (!variant) {
+      return "fallback";
     }
-    console.warn("Selected Fallback image.");
-    return "fallback";
-  }, [variant, environmentId, color]);
+
+    const boatStatus = showBoat ? "withBoat" : "withoutBoat";
+
+    // Sanitize width and length for the URL (e.g., 2.5 -> 2p5)
+    const w = String(parseFloat(variant.width).toFixed(1)).replace(".", "p");
+    const l = String(parseFloat(variant.length).toFixed(1)).replace(".", "p");
+
+    // Construct the new image ID format
+    // Example: lift4_withBoat_black_w4p5_l192
+    return `${environmentId}_${boatStatus}_${color}_w${w}_l${l}`;
+  }, [variant, environmentId, color, showBoat]);
 
   useEffect(() => {
     const cldImage = cld.image(targetImageId);
@@ -38,7 +43,7 @@ function Visualizer({ environmentId, variant, color }) {
     img.src = imageUrl;
     img.onload = () => setDisplayedImage(cldImage);
     img.onerror = () => {
-      console.warn(`Render not found: ${targetImageId}. Using fallback.`);
+      console.warn(`Image not found: ${targetImageId}. Using fallback.`);
       setDisplayedImage(cld.image("fallback"));
     };
   }, [targetImageId]);

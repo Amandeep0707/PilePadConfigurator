@@ -20,6 +20,7 @@ function Configurator({ onBack, onOpenModal }) {
   }
 
   const [config, setConfig] = useState(() => {
+    const initialShowBoat = searchParams.get("showBoat") !== "false";
     const initialWidth =
       parseFloat(searchParams.get("width")) || options.widths[0].value;
     const initialLength =
@@ -29,6 +30,7 @@ function Configurator({ onBack, onOpenModal }) {
       width: initialWidth,
       length: initialLength,
       color: initialColor,
+      showBoat: initialShowBoat,
     };
   });
 
@@ -42,7 +44,14 @@ function Configurator({ onBack, onOpenModal }) {
       return foundVariant.price * environment.poles;
     }
     return 0;
-  }, [foundVariant, config.color, environment.poles]);
+  }, [foundVariant, environment.poles]);
+
+  const totalRetailPrice = useMemo(() => {
+    if (foundVariant && foundVariant.retailPrice) {
+      return foundVariant.retailPrice * environment.poles;
+    }
+    return 0;
+  }, [foundVariant, environment.poles]);
 
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeoutRef = useRef(null);
@@ -52,6 +61,7 @@ function Configurator({ onBack, onOpenModal }) {
     params.set("width", config.width);
     params.set("length", config.length);
     params.set("color", config.color);
+    params.set("showBoat", config.showBoat);
     setSearchParams(params, { replace: true });
   }, [config, setSearchParams]);
 
@@ -77,6 +87,7 @@ function Configurator({ onBack, onOpenModal }) {
       environmentName: environment.name,
       poles: environment.poles,
       totalPrice: totalPrice,
+      totalRetailPrice: totalRetailPrice,
       selectedColor: config.color,
     });
   };
@@ -92,6 +103,7 @@ function Configurator({ onBack, onOpenModal }) {
             environmentId={environment.id}
             variant={foundVariant}
             color={config.color}
+            showBoat={config.showBoat}
           />
         </div>
         <div className="options-panel-wrapper">
@@ -99,7 +111,13 @@ function Configurator({ onBack, onOpenModal }) {
             options={options}
             config={config}
             onConfigChange={handleConfigChange}
-            priceDisplay={<PriceDisplay totalPrice={totalPrice} />}
+            description={foundVariant?.description}
+            priceDisplay={
+              <PriceDisplay
+                totalPrice={totalPrice}
+                totalRetailPrice={totalRetailPrice}
+              />
+            }
           />
           <div className="action-buttons-container">
             <button

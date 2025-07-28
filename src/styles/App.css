@@ -67,7 +67,7 @@ body {
 .app-main {
   flex-grow: 1;
   width: 100%;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1rem;
   margin: 0 auto;
   box-sizing: border-box;
   display: flex;

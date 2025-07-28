@@ -1,4 +1,4 @@
-import rawPricingData from "./pricing_data.json";
+import rawPricingData from "./client_data.json";
 
 function processData() {
   const variants = Object.values(rawPricingData);
@@ -51,6 +51,8 @@ function processData() {
       { id: "black", name: "BLACK" },
       { id: "grey", name: "GREY" },
     ],
+    description:
+      "These are custom-made, ready-to-install padded covers for your boat lift’s guide poles. Made to fit loosely for easy installation and removal, yet stays put while your lift is submerged. PolePads are made to order, just provide your pole measurements and we’ll do the rest!\n\nThe Details\n- No care instructions. Set it and forget it.\n- Durable, UV-resistant outer shell\n- Padded interior for added support\n- Ships directly to your door\n\nBest Use: Lift guide poles, trailer guide poles",
   };
 
   /**

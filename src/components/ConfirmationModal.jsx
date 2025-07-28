@@ -1,3 +1,5 @@
+// src/components/ConfirmationModal.jsx
+
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import "../styles/ConfirmationModal.css";
@@ -14,6 +16,9 @@ const ConfirmationModal = ({ isOpen, closeModal, config, onConfirm }) => {
   if (!isOpen) return null;
 
   const formatCurrency = (num) => `$${num.toFixed(2)}`;
+
+  // Determine if we should show the retail price in the modal
+  const showRetailPrice = config && config.totalRetailPrice > config.totalPrice;
 
   return createPortal(
     <div className="modal-overlay" onClick={closeModal}>
@@ -33,18 +38,27 @@ const ConfirmationModal = ({ isOpen, closeModal, config, onConfirm }) => {
               </div>
               <div className="summary-item summary-addon">
                 <span className="summary-label">
-                  Configuration: {config.width}, {config.length},{" "}
+                  Configuration: {config.width}", {config.length}",{" "}
                   {config.selectedColor.toUpperCase()}
                 </span>
                 <span className="summary-value">SKU: {config.sku}</span>
               </div>
             </div>
+
             <div className="modal-total-section">
               <span className="summary-label">Total Cost</span>
-              <span className="summary-value total-value">
-                {formatCurrency(config.totalPrice)}
-              </span>
+              <div className="price-values">
+                {showRetailPrice && (
+                  <span className="retail-price">
+                    {formatCurrency(config.totalRetailPrice)}
+                  </span>
+                )}
+                <span className="summary-value total-value">
+                  {formatCurrency(config.totalPrice)}
+                </span>
+              </div>
             </div>
+
             <div className="modal-buttons">
               <button
                 type="button"
