@@ -4,6 +4,7 @@ import "./styles/App.css";
 import EnvironmentSelector from "./components/EnvironmentSelector";
 import Configurator from "./components/Configurator";
 import ConfirmationModal from "./components/ConfirmationModal";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,6 +54,7 @@ function App() {
       <header className="app-header">
         <h1>Configurator</h1>
         <p className="subtitle">PilePad Inc.</p>
+        <Analytics />
       </header>
       <main className="app-main">
         <Routes>
