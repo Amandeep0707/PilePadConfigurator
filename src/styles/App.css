@@ -1,26 +1,30 @@
 /* Define color variables for the light theme */
 :root {
   --color-text: #212529;
+  --color-text-highlight: #212529;
   --color-background: #ffffff;
   --color-surface: #f8f9fa;
-  --color-primary: #007bff;
-  --color-accent: #28a745;
-  --color-accent-hover: #218838;
+  --color-primary: #90F209;
+  --color-accent: #007bff;
+  --color-primary-hover: #c2ff6d;
+  --color-accent-hover: #3d9bff;
   --border-color: #dee2e6;
-  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 /* Override variables for the dark theme */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-text: #e9ecef;
+    --color-text-highlight: #212529;
     --color-background: #202020;
     --color-surface: #1e1e1e;
-    --color-primary: #4dabf7;
-    --color-accent: #28a745;
-    --color-accent-hover: #34c458;
+    --color-primary: #90F209;
+    --color-accent: #007bff;
+    --color-primary-hover: #c2ff6d;
+    --color-accent-hover: #3d9bff;
     --border-color: #495057;
-    --shadow-color: rgba(255, 255, 255, 0.05);
+    --shadow-color: rgba(0, 0, 0, 0.5);
   }
 }
 

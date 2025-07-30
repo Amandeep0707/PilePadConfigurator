@@ -62,16 +62,9 @@
 }
 
 @media (min-width: 1025px) {
-  .visualizer-column {
-  }
   
   .options-panel-wrapper {
     margin: 0 auto;
-  }
-}
-
-@media (max-width: 1024px) {
-  .visualizer-column {
   }
 }
 
@@ -158,7 +151,7 @@
 .option-button.selected {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
-  color: white;
+  color: var(--color-text-highlight);
 }
 
 .option-group select {
@@ -182,12 +175,19 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--color-background);
   cursor: pointer;
   padding: 5px;
   border-radius: 8px;
-  border: 2px solid transparent;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
+
+.color-option:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
 
 .color-option.selected {
   background-color: var(--border-color);
@@ -197,15 +197,14 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid var(--border-color);
 }
 
 .color-swatch.black {
-  background-color: #222;
+  background-color: #000;
 }
 
 .color-swatch.grey {
-  background-color: #cccccc;
+  background-color: #bbb;
 }
 
 .length-options-scroller {
@@ -327,13 +326,13 @@
 }
 
 .add-to-cart-button {
-  background-color: var(--color-accent);
-  color: white;
-  border-color: var(--color-accent);
+  background-color: var(--color-primary);
+  color: var(--color-text-highlight);
+  border-color: var(--color-primary);
 }
 .add-to-cart-button:hover {
-  background-color: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
 }
 
 .share-button {
@@ -361,7 +360,7 @@
 .color-swatch.none {
   position: relative;
   background-color: var(--color-background);
-  border: 1px solid var(--border-color); 
+  border: 0.5px solid var(--border-color); 
 }
 
 .color-swatch.none::after {
@@ -381,12 +380,4 @@
     #e53e3e,
     transparent calc(50% + 1px)
   );
-}
-
-.color-swatch.black {
-  background-color: #222;
-}
-
-.color-swatch.grey {
-  background-color: #cccccc;
 }

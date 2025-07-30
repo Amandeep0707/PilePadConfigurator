@@ -120,24 +120,22 @@
   transition: all 0.2s ease-in-out;
 }
 .button-primary {
-  background-color: var(--color-accent); color: white;
+  background-color: var(--color-primary);
+  color: var(--color-text-highlight);
 }
 
 .button-primary:hover {
-  background-color: var(--color-accent-hover);
+  background-color: var(--color-primary-hover);
 }
 
 .button-secondary {
-  background-color: var(--color-background); color: var(--color-text); border: 1px solid var(--border-color);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  border: 1px solid var(--border-color);
 }
 
 .button-secondary:hover {
   background-color: var(--color-surface);
-}
-
-.total-value {
-  font-size: 1.25rem;
-  font-weight: bold;
 }
 
 .price-values {

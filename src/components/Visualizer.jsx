@@ -18,13 +18,18 @@ function Visualizer({ environmentId, variant, color, showBoat }) {
 
     const boatStatus = showBoat ? "withBoat" : "withoutBoat";
 
-    // Sanitize width and length for the URL (e.g., 2.5 -> 2p5)
-    const w = String(parseFloat(variant.width).toFixed(1)).replace(".", "p");
-    const l = String(parseFloat(variant.length).toFixed(1)).replace(".", "p");
+    // Sanitize width and length for the URL (e.g., 2.5 -> 2p5, 2.0 -> 2)
+    const sanitize = (dimension) => {
+      const num = parseFloat(dimension);
+      // For whole numbers, return as is. For decimals, replace '.' with 'p'.
+      return num % 1 === 0 ? String(num) : String(num).replace(".", "p");
+    };
+    const w = sanitize(variant.width);
+    const l = sanitize(variant.length);
 
     // Construct the new image ID format
     // Example: lift4_withBoat_black_w4p5_l192
-    return `${environmentId}_${boatStatus}_${color}_w${w}_l${l}`;
+    return `/renders/${environmentId}_${boatStatus}_${color}_w${w}_l${l}`;
   }, [variant, environmentId, color, showBoat]);
 
   useEffect(() => {
