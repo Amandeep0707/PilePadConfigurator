@@ -54,7 +54,17 @@ async function bulkRename() {
             `[${processedCount}] Renaming: ${oldPublicId}  ->  ${newPublicId}`
           );
 
-          await cloudinary.uploader.rename(oldPublicId, newPublicId);
+          try {
+            await cloudinary.uploader.rename(oldPublicId, newPublicId);
+          } catch (error) {
+            if (error.message.includes("already exists")) {
+              console.log(
+                `[${processedCount}] SKIPPING - ${newPublicId} already exists.`
+              );
+            } else {
+              throw error;
+            }
+          }
         } else {
           console.log(
             `[${processedCount}] Skipping (no suffix): ${oldPublicId}`

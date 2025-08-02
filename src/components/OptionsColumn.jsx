@@ -6,6 +6,9 @@ const OptionsColumn = React.memo(function OptionsColumn({
   onConfigChange,
   description,
   priceDisplay,
+  handleCopyLink,
+  handleAddToCartClick,
+  isCopied,
 }) {
   const handleColorKeyDown = (e, colorId) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -16,15 +19,34 @@ const OptionsColumn = React.memo(function OptionsColumn({
 
   return (
     <div className="options-column">
+      {priceDisplay}
+
+      {/* Action Buttons */}
+      <div className="action-buttons-container">
+        <button
+          className={`action-button share-button ${isCopied ? "copied" : ""}`}
+          onClick={handleCopyLink}
+          style={{ position: "relative" }}>
+          <span className={`button-text ${isCopied ? "fade-out" : "fade-in"}`}>
+            Share Configuration
+          </span>
+          <span
+            className={`button-text copied-text ${
+              isCopied ? "fade-in" : "fade-out"
+            }`}>
+            Link Copied!
+          </span>
+        </button>
+        <button
+          className="action-button add-to-cart-button"
+          onClick={handleAddToCartClick}>
+          Add to Cart
+        </button>
+      </div>
+
       <h2>Create Your PolePads</h2>
 
-      {description && (
-        <div className="option-group">
-          <label>Description</label>
-          <div className="product-description">{description.trim()}</div>
-        </div>
-      )}
-
+      {/* Options { Sleeves, Width, Length} */}
       <div className="option-group">
         <div className="label-container">
           <label>Sleeves Color</label>
@@ -52,7 +74,6 @@ const OptionsColumn = React.memo(function OptionsColumn({
           ))}
         </div>
       </div>
-
       <div className="option-group">
         <label>Width</label>
         <div className="options-grid">
@@ -84,7 +105,12 @@ const OptionsColumn = React.memo(function OptionsColumn({
         </div>
       </div>
 
-      {priceDisplay}
+      {description && (
+        <div className="option-group">
+          <label>Description</label>
+          <div className="product-description">{description.trim()}</div>
+        </div>
+      )}
     </div>
   );
 });

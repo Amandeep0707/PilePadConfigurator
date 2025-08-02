@@ -106,44 +106,21 @@ function Configurator({ onBack, onOpenModal }) {
             showBoat={config.showBoat}
           />
         </div>
-        <div className="options-panel-wrapper">
-          <OptionsColumn
-            options={options}
-            config={config}
-            onConfigChange={handleConfigChange}
-            description={foundVariant?.description}
-            priceDisplay={
-              <PriceDisplay
-                totalPrice={totalPrice}
-                totalRetailPrice={totalRetailPrice}
-              />
-            }
-          />
-          <div className="action-buttons-container">
-            <button
-              className={`action-button share-button ${
-                isCopied ? "copied" : ""
-              }`}
-              onClick={handleCopyLink}
-              style={{ position: "relative" }}>
-              <span
-                className={`button-text ${isCopied ? "fade-out" : "fade-in"}`}>
-                Share Configuration
-              </span>
-              <span
-                className={`button-text copied-text ${
-                  isCopied ? "fade-in" : "fade-out"
-                }`}>
-                Link Copied!
-              </span>
-            </button>
-            <button
-              className="action-button add-to-cart-button"
-              onClick={handleAddToCartClick}>
-              Add to Cart
-            </button>
-          </div>
-        </div>
+        <OptionsColumn
+          options={options}
+          config={config}
+          onConfigChange={handleConfigChange}
+          description={foundVariant?.description}
+          priceDisplay={
+            <PriceDisplay
+              totalPrice={totalPrice}
+              totalRetailPrice={totalRetailPrice}
+            />
+          }
+          handleCopyLink={handleCopyLink}
+          handleAddToCartClick={handleAddToCartClick}
+          isCopied={isCopied}
+        />
       </div>
     </div>
   );

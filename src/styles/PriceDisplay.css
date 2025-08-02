@@ -1,7 +1,6 @@
 .price-container {
-  margin-top: 3rem;
-  border-top: 1px solid var(--border-color);
-  border-radius: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 1ch;
   padding-bottom: 0.5rem;
 }
 
@@ -52,5 +51,5 @@
 }
 
 .final-price {
-  color: var(--color-text);
+  color: var(--color-primary);
 }
