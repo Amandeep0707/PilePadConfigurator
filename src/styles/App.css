@@ -10,6 +10,7 @@
   --color-accent-hover: #3d9bff;
   --border-color: #dee2e6;
   --shadow-color: rgba(0, 0, 0, 0.3);
+  --text-color: #202020;
 }
 
 /* Override variables for the dark theme */
@@ -25,6 +26,7 @@
     --color-accent-hover: #3d9bff;
     --border-color: #495057;
     --shadow-color: rgba(0, 0, 0, 0.5);
+    --text-color: #bbb;
   }
 }
 

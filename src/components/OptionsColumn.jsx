@@ -19,31 +19,6 @@ const OptionsColumn = React.memo(function OptionsColumn({
 
   return (
     <div className="options-column">
-      {priceDisplay}
-
-      {/* Action Buttons */}
-      <div className="action-buttons-container">
-        <button
-          className={`action-button share-button ${isCopied ? "copied" : ""}`}
-          onClick={handleCopyLink}
-          style={{ position: "relative" }}>
-          <span className={`button-text ${isCopied ? "fade-out" : "fade-in"}`}>
-            Share Configuration
-          </span>
-          <span
-            className={`button-text copied-text ${
-              isCopied ? "fade-in" : "fade-out"
-            }`}>
-            Link Copied!
-          </span>
-        </button>
-        <button
-          className="action-button add-to-cart-button"
-          onClick={handleAddToCartClick}>
-          Add to Cart
-        </button>
-      </div>
-
       <h2>Create Your PolePads</h2>
 
       {/* Options { Sleeves, Width, Length} */}
@@ -103,6 +78,31 @@ const OptionsColumn = React.memo(function OptionsColumn({
             </button>
           ))}
         </div>
+      </div>
+
+      {priceDisplay}
+
+      {/* Action Buttons */}
+      <div className="action-buttons-container">
+        <button
+          className={`action-button share-button ${isCopied ? "copied" : ""}`}
+          onClick={handleCopyLink}
+          style={{ position: "relative" }}>
+          <span className={`button-text ${isCopied ? "fade-out" : "fade-in"}`}>
+            Share Configuration
+          </span>
+          <span
+            className={`button-text copied-text ${
+              isCopied ? "fade-in" : "fade-out"
+            }`}>
+            Link Copied!
+          </span>
+        </button>
+        <button
+          className="action-button add-to-cart-button"
+          onClick={handleAddToCartClick}>
+          Add to Cart
+        </button>
       </div>
 
       {description && (

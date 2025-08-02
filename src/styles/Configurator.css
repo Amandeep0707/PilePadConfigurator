@@ -41,7 +41,7 @@
   background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 0px 20px var(--shadow-color);
-  overflow-y: auto; /* Only this column scrolls */
+  overflow-y: auto;
   overflow-x: hidden;
   padding: 1rem;
   
@@ -50,13 +50,10 @@
   scrollbar-color: var(--border-color) transparent;
 }
 
-.options-column::-webkit-scrollbar {
-  width: 6px;
-}
-
 .options-column::-webkit-scrollbar-track {
   background: transparent;
 }
+
 
 .options-column::-webkit-scrollbar-thumb {
   background-color: var(--border-color);
@@ -304,7 +301,7 @@
   display: flex;
   gap: 0.5rem;
   padding: 0.5rem 0;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 }
 
 .action-button {
@@ -349,7 +346,7 @@
 
 .share-button.copied {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-text-highlight);
   border-color: var(--color-primary);
   transform: translateY(0); 
   cursor: default;
@@ -417,7 +414,7 @@
 
   .product-description {
     padding: 0.5rem;
-    color: #bbb;
+    color: var(--text-color);
     border: 0.5px solid #aaa
   }
 }
