@@ -1,9 +1,11 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useSearchParams, useParams } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { environments, options, findVariant } from "../data/configProcessor";
 import Visualizer from "./Visualizer";
 import OptionsColumn from "./OptionsColumn";
 import PriceDisplay from "./PriceDisplay";
+import ProductDescription from "./ProductDescription"; // Import the new component
 import "../styles/Configurator.css";
 
 function Configurator({ onBack, onOpenModal }) {
@@ -14,6 +16,8 @@ function Configurator({ onBack, onOpenModal }) {
     () => environments.find((env) => env.id === environmentId),
     [environmentId]
   );
+
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false); // State for the new modal
 
   if (!environment) {
     return <p>Loading environment...</p>;
@@ -95,7 +99,8 @@ function Configurator({ onBack, onOpenModal }) {
   return (
     <div className="configurator-container">
       <button onClick={onBack} className="back-button">
-        ← Change Environment
+        <ArrowLeft />
+        Change Environment
       </button>
       <div className="configurator-main">
         <div className="visualizer-column">
@@ -104,6 +109,7 @@ function Configurator({ onBack, onOpenModal }) {
             variant={foundVariant}
             color={config.color}
             showBoat={config.showBoat}
+            onInfoClick={() => setIsDescriptionOpen(true)} // Pass the handler
           />
         </div>
         <OptionsColumn
@@ -122,6 +128,11 @@ function Configurator({ onBack, onOpenModal }) {
           isCopied={isCopied}
         />
       </div>
+      <ProductDescription
+        isOpen={isDescriptionOpen}
+        onClose={() => setIsDescriptionOpen(false)}
+        description={foundVariant?.description}
+      />
     </div>
   );
 }

@@ -1,34 +1,29 @@
 import { useState, useEffect, useMemo } from "react";
 import cld from "../cloudinary";
 import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
+import { Info } from "lucide-react";
 import SkeletonLoader from "./SkeletonLoader";
 import "../styles/Visualizer.css";
 
-function Visualizer({ environmentId, variant, color, showBoat }) {
+function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
   const [displayedImage, setDisplayedImage] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isEnlarged, setIsEnlarged] = useState(false);
   const [isLightboxLoading, setIsLightboxLoading] = useState(true);
 
   const targetImageId = useMemo(() => {
-    // If we don't have a valid variant yet, return a fallback.
     if (!variant) {
       return "fallback";
     }
 
     const boatStatus = showBoat ? "withBoat" : "withoutBoat";
-
-    // Sanitize width and length for the URL (e.g., 2.5 -> 2p5, 2.0 -> 2)
     const sanitize = (dimension) => {
       const num = parseFloat(dimension);
-      // For whole numbers, return as is. For decimals, replace '.' with 'p'.
       return num % 1 === 0 ? String(num) : String(num).replace(".", "p");
     };
     const w = sanitize(variant.width);
     const l = sanitize(variant.length);
 
-    // Construct the new image ID format
-    // Example: lift4_withBoat_black_w4p5_l192
     return `/renders/${environmentId}_${boatStatus}_${color}_w${w}_l${l}`;
   }, [variant, environmentId, color, showBoat]);
 
@@ -70,15 +65,27 @@ function Visualizer({ environmentId, variant, color, showBoat }) {
 
   return (
     <>
-      <div className="visualizer-wrapper" onClick={handleImageClick}>
+      <div className="visualizer-wrapper">
         {isTransitioning && <SkeletonLoader />}
         {displayedImage && (
-          <AdvancedImage
-            key={displayedImage.publicID}
-            cldImg={displayedImage}
-            className={`visualizer-image ${isTransitioning ? "" : "loaded"}`}
-            plugins={[lazyload(), responsive({ steps: 200 })]}
-          />
+          <>
+            <AdvancedImage
+              key={displayedImage.publicID}
+              cldImg={displayedImage}
+              className={`visualizer-image ${isTransitioning ? "" : "loaded"}`}
+              plugins={[lazyload(), responsive({ steps: 200 })]}
+              onClick={handleImageClick}
+            />
+            <Info
+              className="info-icon"
+              color="white"
+              size={24}
+              onClick={(e) => {
+                e.stopPropagation();
+                onInfoClick();
+              }}
+            />
+          </>
         )}
       </div>
       {isEnlarged && (

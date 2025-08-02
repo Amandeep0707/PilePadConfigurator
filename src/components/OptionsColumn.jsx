@@ -1,4 +1,5 @@
 import React from "react";
+import { Share, ShoppingCart } from "lucide-react";
 
 const OptionsColumn = React.memo(function OptionsColumn({
   options,
@@ -80,37 +81,35 @@ const OptionsColumn = React.memo(function OptionsColumn({
         </div>
       </div>
 
-      {priceDisplay}
+      <div className="price-info">
+        {priceDisplay}
 
-      {/* Action Buttons */}
-      <div className="action-buttons-container">
-        <button
-          className={`action-button share-button ${isCopied ? "copied" : ""}`}
-          onClick={handleCopyLink}
-          style={{ position: "relative" }}>
-          <span className={`button-text ${isCopied ? "fade-out" : "fade-in"}`}>
-            Share Configuration
-          </span>
-          <span
-            className={`button-text copied-text ${
-              isCopied ? "fade-in" : "fade-out"
-            }`}>
-            Link Copied!
-          </span>
-        </button>
-        <button
-          className="action-button add-to-cart-button"
-          onClick={handleAddToCartClick}>
-          Add to Cart
-        </button>
-      </div>
-
-      {description && (
-        <div className="option-group">
-          <label>Description</label>
-          <div className="product-description">{description.trim()}</div>
+        {/* Action Buttons */}
+        <div className="action-buttons-container">
+          <button
+            className={`action-button share-button ${isCopied ? "copied" : ""}`}
+            onClick={handleCopyLink}
+            style={{ position: "relative" }}>
+            <span
+              className={`button-text ${isCopied ? "fade-out" : "fade-in"}`}>
+              <Share size={16} />
+              Share
+            </span>
+            <span
+              className={`button-text copied-text ${
+                isCopied ? "fade-in" : "fade-out"
+              }`}>
+              Link Copied!
+            </span>
+          </button>
+          <button
+            className="action-button add-to-cart-button"
+            onClick={handleAddToCartClick}>
+            <ShoppingCart size={16} strokeWidth={3} />
+            Add to Cart
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 });

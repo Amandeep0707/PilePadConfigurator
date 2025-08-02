@@ -64,13 +64,13 @@ const ConfirmationModal = ({ isOpen, closeModal, config, onConfirm }) => {
                 type="button"
                 className="button-secondary"
                 onClick={closeModal}>
-                Edit Configuration
+                Go Back
               </button>
               <button
                 type="button"
                 className="button-primary"
                 onClick={onConfirm}>
-                Confirm & Add to Cart
+                Confirm
               </button>
             </div>
           </>

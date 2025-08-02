@@ -1,0 +1,75 @@
+.product-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 1rem;
+  box-sizing: border-box;
+  backdrop-filter: blur(10px);
+}
+
+.product-modal-panel {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  background-color: var(--color-background);
+  padding: 1.5rem;
+  text-align: left;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  color: var(--color-text);
+  position: relative;
+  animation: modal-fade-in 0.3s ease-out;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.product-modal-header h3 {
+  margin: 0;
+}
+
+.product-modal-content p {
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.product-modal-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.product-modal-close-btn:hover {
+  opacity: 1;
+}
