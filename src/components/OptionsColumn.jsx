@@ -5,7 +5,6 @@ const OptionsColumn = React.memo(function OptionsColumn({
   options,
   config,
   onConfigChange,
-  description,
   priceDisplay,
   handleCopyLink,
   handleAddToCartClick,

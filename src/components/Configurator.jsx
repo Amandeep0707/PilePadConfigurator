@@ -5,7 +5,7 @@ import { environments, options, findVariant } from "../data/configProcessor";
 import Visualizer from "./Visualizer";
 import OptionsColumn from "./OptionsColumn";
 import PriceDisplay from "./PriceDisplay";
-import ProductDescription from "./ProductDescription"; // Import the new component
+import ProductDescription from "./ProductDescription";
 import "../styles/Configurator.css";
 
 function Configurator({ onBack, onOpenModal }) {
@@ -116,7 +116,6 @@ function Configurator({ onBack, onOpenModal }) {
           options={options}
           config={config}
           onConfigChange={handleConfigChange}
-          description={foundVariant?.description}
           priceDisplay={
             <PriceDisplay
               totalPrice={totalPrice}

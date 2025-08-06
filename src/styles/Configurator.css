@@ -35,7 +35,7 @@
 .visualizer-column {
   grid-area: visualizer;
   display: flex;
-  align-items: center;
+  align-items: first baseline;
   justify-content: center;
   overflow: hidden;
 }
