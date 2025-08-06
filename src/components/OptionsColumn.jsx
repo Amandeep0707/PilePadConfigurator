@@ -22,34 +22,7 @@ const OptionsColumn = React.memo(function OptionsColumn({
     <div className="options-column">
       <h2>Create Your PolePads</h2>
 
-      {/* Options { Sleeves, Width, Length} */}
-      <div className="option-group">
-        <div className="label-container">
-          <label>Sleeves Color</label>
-          <button
-            className={`toggle-button ${config.showBoat ? "active" : ""}`}
-            onClick={() => onConfigChange("showBoat", !config.showBoat)}>
-            Show Boat
-          </button>
-        </div>
-        <div className="color-selector">
-          {options.colors.map((c) => (
-            <div
-              key={c.id}
-              className={`color-option ${
-                config.color === c.id ? "selected" : ""
-              }`}
-              onClick={() => onConfigChange("color", c.id)}
-              onKeyDown={(e) => handleColorKeyDown(e, c.id)}
-              role="radio"
-              aria-checked={config.color === c.id}
-              tabIndex="0">
-              <div className={`color-swatch ${c.id}`} />
-              <span>{c.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Options { Width, Length, Color} */}
       <div className="option-group">
         <label>Width</label>
         <div className="options-grid">
@@ -77,6 +50,33 @@ const OptionsColumn = React.memo(function OptionsColumn({
               onClick={() => onConfigChange("length", l.value)}>
               {l.label}
             </button>
+          ))}
+        </div>
+      </div>
+      <div className="option-group">
+        <div className="label-container">
+          <label>Sleeves Color</label>
+          <button
+            className={`toggle-button ${config.showBoat ? "active" : ""}`}
+            onClick={() => onConfigChange("showBoat", !config.showBoat)}>
+            Show Boat
+          </button>
+        </div>
+        <div className="color-selector">
+          {options.colors.map((c) => (
+            <div
+              key={c.id}
+              className={`color-option ${
+                config.color === c.id ? "selected" : ""
+              }`}
+              onClick={() => onConfigChange("color", c.id)}
+              onKeyDown={(e) => handleColorKeyDown(e, c.id)}
+              role="radio"
+              aria-checked={config.color === c.id}
+              tabIndex="0">
+              <div className={`color-swatch ${c.id}`} />
+              <span>{c.name}</span>
+            </div>
           ))}
         </div>
       </div>

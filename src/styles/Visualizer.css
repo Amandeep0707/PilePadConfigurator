@@ -56,15 +56,16 @@
   .visualizer-wrapper {
     width: 100%;
     aspect-ratio: 16 / 9;
-    max-height: 50vh;
+    max-height: 35vh; /* Slightly smaller to leave more room for options */
     border-radius: 0;
+    position: relative;
   }
 }
 
 @media (max-width: 768px) {
   .visualizer-wrapper {
     aspect-ratio: 4 / 3; /* More square aspect ratio for small screens */
-    max-height: 40vh;
+    max-height: 30vh;
   }
 }
 

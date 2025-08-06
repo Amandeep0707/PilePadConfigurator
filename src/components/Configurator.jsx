@@ -17,7 +17,7 @@ function Configurator({ onBack, onOpenModal }) {
     [environmentId]
   );
 
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false); // State for the new modal
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
   if (!environment) {
     return <p>Loading environment...</p>;
