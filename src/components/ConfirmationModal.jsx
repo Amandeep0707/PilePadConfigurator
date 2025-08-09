@@ -1,5 +1,3 @@
-// src/components/ConfirmationModal.jsx
-
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import "../styles/ConfirmationModal.css";
@@ -38,7 +36,7 @@ const ConfirmationModal = ({ isOpen, closeModal, config, onConfirm }) => {
               </div>
               <div className="summary-item summary-addon">
                 <span className="summary-label">
-                  Configuration: {config.width}", {config.length}",{" "}
+                  Configuration: {config.width}, {config.length},{" "}
                   {config.selectedColor.toUpperCase()}
                 </span>
                 <span className="summary-value">SKU: {config.sku}</span>

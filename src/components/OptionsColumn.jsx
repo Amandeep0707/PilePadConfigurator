@@ -10,10 +10,17 @@ const OptionsColumn = React.memo(function OptionsColumn({
   handleAddToCartClick,
   isCopied,
 }) {
+  const handleColorToggle = (colorId) => {
+    // If the color is currently selected, deselect it (set to none)
+    // If it's not selected, select it
+    const newColor = config.color === colorId ? "none" : colorId;
+    onConfigChange("color", newColor);
+  };
+
   const handleColorKeyDown = (e, colorId) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      onConfigChange("color", colorId);
+      handleColorToggle(colorId);
     }
   };
 
@@ -62,21 +69,23 @@ const OptionsColumn = React.memo(function OptionsColumn({
           </button>
         </div>
         <div className="color-selector">
-          {options.colors.map((c) => (
-            <div
-              key={c.id}
-              className={`color-option ${
-                config.color === c.id ? "selected" : ""
-              }`}
-              onClick={() => onConfigChange("color", c.id)}
-              onKeyDown={(e) => handleColorKeyDown(e, c.id)}
-              role="radio"
-              aria-checked={config.color === c.id}
-              tabIndex="0">
-              <div className={`color-swatch ${c.id}`} />
-              <span>{c.name}</span>
-            </div>
-          ))}
+          {options.colors
+            .filter((c) => c.id !== "none") // Remove the "none" option
+            .map((c) => (
+              <div
+                key={c.id}
+                className={`color-option toggle-color ${
+                  config.color === c.id ? "selected" : ""
+                }`}
+                onClick={() => handleColorToggle(c.id)}
+                onKeyDown={(e) => handleColorKeyDown(e, c.id)}
+                role="button"
+                aria-pressed={config.color === c.id}
+                tabIndex="0">
+                <div className={`color-swatch ${c.id}`} />
+                <span>{c.name}</span>
+              </div>
+            ))}
         </div>
       </div>
 
@@ -103,7 +112,9 @@ const OptionsColumn = React.memo(function OptionsColumn({
           </button>
           <button
             className="action-button add-to-cart-button"
-            onClick={handleAddToCartClick}>
+            onClick={handleAddToCartClick}
+            disabled={!config.color} // Disable if no color is selected
+            title={!config.color ? "Please select a sleeve color" : ""}>
             <ShoppingCart size={16} strokeWidth={3} />
             Add to Cart
           </button>
