@@ -1,4 +1,5 @@
 import rawPricingData from "./client_data.json";
+import { fetchSheetData } from "./googleSheetsService";
 
 function processData() {
   const variants = Object.values(rawPricingData);
@@ -55,6 +56,8 @@ function processData() {
       "These are custom-made, ready-to-install padded covers for your boat lift’s guide poles. Made to fit loosely for easy installation and removal, yet stays put while your lift is submerged. PolePads are made to order, just provide your pole measurements and we’ll do the rest!\n\nThe Details\n- No care instructions. Set it and forget it.\n- Durable, UV-resistant outer shell\n- Padded interior for added support\n- Ships directly to your door\n\nBest Use: Lift guide poles, trailer guide poles",
   };
 
+  const sheetData = fetchSheetData();
+
   /**
    * Finds a specific product variant based on the size configuration.
    * @param {object} config - The selected configuration {width, length}.
@@ -71,8 +74,9 @@ function processData() {
   return {
     environments,
     options,
+    sheetData,
     findVariant,
   };
 }
 
-export const { environments, options, findVariant } = processData();
+export const { environments, options, sheetData, findVariant } = processData();

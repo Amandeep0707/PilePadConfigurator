@@ -1,7 +1,12 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useSearchParams, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { environments, options, findVariant } from "../data/configProcessor";
+import {
+  environments,
+  options,
+  sheetData,
+  findVariant,
+} from "../data/configProcessor";
 import Visualizer from "./Visualizer";
 import OptionsColumn from "./OptionsColumn";
 import PriceDisplay from "./PriceDisplay";
@@ -22,6 +27,8 @@ function Configurator({ onBack, onOpenModal }) {
   if (!environment) {
     return <p>Loading environment...</p>;
   }
+
+  // console.log(sheetData);
 
   const [config, setConfig] = useState(() => {
     const initialShowBoat = searchParams.get("showBoat") !== "false";
