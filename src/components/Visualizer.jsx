@@ -28,7 +28,7 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
   }, [variant, environmentId, color, showBoat]);
 
   useEffect(() => {
-    const cldImage = cld.image(targetImageId);
+    const cldImage = cld.image(targetImageId).quality("auto").format("auto");
     const imageUrl = cldImage.toURL();
 
     if (displayedImage && imageUrl === displayedImage.toURL()) {
@@ -44,7 +44,7 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
     img.onload = () => setDisplayedImage(cldImage);
     img.onerror = () => {
       console.warn(`Image not found: ${targetImageId}. Using fallback.`);
-      setDisplayedImage(cld.image("fallback"));
+      setDisplayedImage(cld.image("fallback").quality("auto").format("auto"));
     };
   }, [targetImageId]);
 

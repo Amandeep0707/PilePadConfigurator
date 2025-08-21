@@ -27,3 +27,6 @@ dist-ssr
 
 # Render Images
 renders/
+
+# Renders Log
+log.txt

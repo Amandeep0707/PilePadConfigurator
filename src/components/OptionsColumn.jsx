@@ -30,7 +30,13 @@ const OptionsColumn = React.memo(function OptionsColumn({
 
       {/* Options { Width, Length, Color} */}
       <div className="option-group">
-        <label>Width</label>
+        <div className="option-title">
+          <label>Select Your Sleeve Diameter</label>
+          <a class="option-group-description">
+            We highly recommend choosing a diameter AT LEAST .5” larger than
+            your lift pole diameter.
+          </a>
+        </div>
         <div className="options-grid">
           {options.widths.map((w) => (
             <button
@@ -45,7 +51,9 @@ const OptionsColumn = React.memo(function OptionsColumn({
         </div>
       </div>
       <div className="option-group">
-        <label>Length</label>
+        <div className="option-title">
+          <label>Select your PolePad length</label>
+        </div>
         <div className="options-grid">
           {options.lengths.map((l) => (
             <button
@@ -61,7 +69,12 @@ const OptionsColumn = React.memo(function OptionsColumn({
       </div>
       <div className="option-group">
         <div className="label-container">
-          <label>Sleeves Color</label>
+          <div className="option-title">
+            <label>Select Your PolePad Color</label>
+            <a class="option-group-description">
+              A color must be selected to place items in the cart.
+            </a>
+          </div>
           <button
             className={`toggle-button ${config.showBoat ? "active" : ""}`}
             onClick={() => onConfigChange("showBoat", !config.showBoat)}>
@@ -111,10 +124,14 @@ const OptionsColumn = React.memo(function OptionsColumn({
             </span>
           </button>
           <button
-            className="action-button add-to-cart-button"
+            className={`action-button add-to-cart-button ${
+              config.color === "none" ? "disabled" : ""
+            }`}
             onClick={handleAddToCartClick}
-            disabled={!config.color} // Disable if no color is selected
-            title={!config.color ? "Please select a sleeve color" : ""}>
+            disabled={config.color === "none"} // Disable if no color is selected
+            title={
+              config.color === "none" ? "Please select a sleeve color" : ""
+            }>
             <ShoppingCart size={16} strokeWidth={3} />
             Add to Cart
           </button>

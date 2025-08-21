@@ -4,7 +4,7 @@
   --color-text-highlight: #212529;
   --color-background: #ffffff;
   --color-surface: #f8f9fa;
-  --color-primary: #90F209;
+  --color-primary: #90f209;
   --color-accent: #007bff;
   --color-primary-hover: #c2ff6d;
   --color-accent-hover: #3d9bff;
@@ -20,7 +20,7 @@
     --color-text-highlight: #212529;
     --color-background: #202020;
     --color-surface: #1e1e1e;
-    --color-primary: #90F209;
+    --color-primary: #90f209;
     --color-accent: #007bff;
     --color-primary-hover: #c2ff6d;
     --color-accent-hover: #3d9bff;
@@ -33,12 +33,12 @@
 /* Apply base styles */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
   color: var(--color-text);
   background-color: var(--color-background);
   transition: color 0.2s, background-color 0.2s;
@@ -48,7 +48,7 @@ body {
 #root {
   display: grid;
   grid-template-rows: auto 1fr auto; /* Header, Main, Footer */
-  grid-template-areas: 
+  grid-template-areas:
     "header"
     "main"
     "footer";
@@ -103,7 +103,7 @@ body {
   body {
     overflow: auto; /* Allow scrolling on mobile */
   }
-  
+
   #root {
     display: flex;
     flex-direction: column;
@@ -118,12 +118,12 @@ body {
   .app-header .subtitle {
     font-size: 0.8rem;
   }
-  
+
   .app-main {
     flex-grow: 1;
     overflow: visible;
   }
-  
+
   .app-footer {
     display: none; /* Hide footer on mobile */
   }
