@@ -3,14 +3,10 @@
   background-color: var(--color-surface);
   border-radius: 8px;
   overflow: hidden;
-  /* box-shadow: 0 0px 10px var(--shadow-color); */
   cursor: zoom-in;
-  
-  /* Default mobile sizing with padding-based aspect ratio */
   width: 100%;
   height: 0;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio (9/16 = 0.5625) */
-
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
   user-select: none;
 }
 
@@ -20,29 +16,31 @@
     /* Reset padding-based sizing */
     height: auto;
     padding-bottom: 0;
-    
+
     /* Use intrinsic sizing that respects both width and height constraints */
     aspect-ratio: 16 / 9;
-    
+
     /* Key: Use CSS logic to fit within available space */
     /* Available width = viewport width - options column (400px) - gap (1rem) - padding (2rem) */
     /* Available height = viewport height - header - footer - padding */
     width: min(
-      100%, 
-      calc((100vh - 120px) * 16 / 9),  /* height-constrained width */
-      calc(100vw - 400px - 3rem)       /* available width */
+      100%,
+      calc((100vh - 120px) * 16 / 9),
+      /* height-constrained width */ calc(100vw - 400px - 3rem)
+        /* available width */
     );
-    
+
     height: min(
-      calc(100vh - 120px),              /* available height */
-      calc((100vw - 400px - 3rem) * 9 / 16)  /* width-constrained height */
+      calc(100vh - 120px),
+      /* available height */ calc((100vw - 400px - 3rem) * 9 / 16)
+        /* width-constrained height */
     );
-    
+
     /* Ensure it doesn't exceed container */
     max-width: 100%;
     max-height: 100%;
   }
-  
+
   .visualizer-column {
     display: flex;
     align-items: center;
@@ -85,9 +83,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  
+
+  /* --- CRITICAL CHANGE FOR CROSS-FADE --- */
+  /* The transition now happens on opacity. The default opacity is 0. */
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
+  z-index: 2; /* The new image should always be on top */
 }
 
 .visualizer-image.loaded {
@@ -104,7 +105,7 @@
   justify-content: center;
   align-items: center;
   z-index: 10;
-  
+
   opacity: 0;
   background-color: rgba(0, 0, 0, 0.05);
   transition: opacity 0.3s ease-in-out;
@@ -148,8 +149,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .lightbox-image {

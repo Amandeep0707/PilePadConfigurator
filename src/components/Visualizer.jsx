@@ -1,21 +1,25 @@
 import { useState, useEffect, useMemo } from "react";
 import cld from "../cloudinary";
 import { AdvancedImage, lazyload, responsive } from "@cloudinary/react";
-import { Info } from "lucide-react";
+import { Info, Moon } from "lucide-react";
 import SkeletonLoader from "./SkeletonLoader";
+import { MoonLoader } from "react-spinners";
 import "../styles/Visualizer.css";
 
 function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
-  const [displayedImage, setDisplayedImage] = useState(null);
-  const [isTransitioning, setIsTransitioning] = useState(true);
+  const [currentImage, setCurrentImage] = useState(null);
+  const [previousImage, setPreviousImage] = useState(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  // NEW: State for the small loader for subsequent loads
+  const [isSubsequentLoading, setIsSubsequentLoading] = useState(false);
+
   const [isEnlarged, setIsEnlarged] = useState(false);
   const [isLightboxLoading, setIsLightboxLoading] = useState(true);
 
   const targetImageId = useMemo(() => {
-    if (!variant) {
-      return "fallback";
-    }
-
+    // ... (logic remains the same)
+    if (!variant) return "fallback";
     const boatStatus = showBoat ? "withBoat" : "withoutBoat";
     const sanitize = (dimension) => {
       const num = parseFloat(dimension);
@@ -23,7 +27,6 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
     };
     const w = sanitize(variant.width);
     const l = sanitize(variant.length);
-
     return `/renders/${environmentId}_${boatStatus}_${color}_w${w}_l${l}`;
   }, [variant, environmentId, color, showBoat]);
 
@@ -31,34 +34,48 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
     const cldImage = cld.image(targetImageId).quality("auto").format("auto");
     const imageUrl = cldImage.toURL();
 
-    if (displayedImage && imageUrl === displayedImage.toURL()) {
-      setIsTransitioning(false);
+    if (currentImage && imageUrl === currentImage.toURL()) {
       return;
     }
 
-    setIsTransitioning(true);
-    if (isEnlarged) setIsEnlarged(false);
+    // NEW: If this is not the first load, show the small loader
+    if (!isInitialLoading) {
+      setIsSubsequentLoading(true);
+    }
 
     const img = new Image();
     img.src = imageUrl;
-    img.onload = () => setDisplayedImage(cldImage);
+
+    img.onload = () => {
+      setPreviousImage(currentImage);
+      setCurrentImage(cldImage);
+
+      if (isInitialLoading) setIsInitialLoading(false);
+
+      // NEW: Hide the small loader once the image is ready
+      setIsSubsequentLoading(false);
+    };
+
     img.onerror = () => {
       console.warn(`Image not found: ${targetImageId}. Using fallback.`);
-      setDisplayedImage(cld.image("fallback").quality("auto").format("auto"));
+      const fallback = cld.image("fallback").quality("auto").format("auto");
+      setPreviousImage(currentImage);
+      setCurrentImage(fallback);
+
+      if (isInitialLoading) setIsInitialLoading(false);
+
+      // NEW: Also hide the loader on error
+      setIsSubsequentLoading(false);
     };
   }, [targetImageId]);
 
-  useEffect(() => {
-    if (displayedImage) setIsTransitioning(false);
-  }, [displayedImage]);
-
+  // ... (other handlers remain the same)
   const handleImageClick = () => {
-    if (!isTransitioning) {
+    if (!isInitialLoading) {
       setIsLightboxLoading(true);
       setIsEnlarged(true);
     }
   };
-
   const handleCloseEnlarged = () => setIsEnlarged(false);
   const handleLightboxImageLoad = () => setIsLightboxLoading(false);
   const handleLightboxImageError = () => setIsLightboxLoading(false);
@@ -66,28 +83,49 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
   return (
     <>
       <div className="visualizer-wrapper">
-        {isTransitioning && <SkeletonLoader />}
-        {displayedImage && (
-          <>
-            <AdvancedImage
-              key={displayedImage.publicID}
-              cldImg={displayedImage}
-              className={`visualizer-image ${isTransitioning ? "" : "loaded"}`}
-              plugins={[lazyload(), responsive({ steps: 200 })]}
-              onClick={handleImageClick}
-            />
-            <Info
-              className="info-icon"
-              color="white"
-              size={24}
-              onClick={(e) => {
-                e.stopPropagation();
-                onInfoClick();
-              }}
-            />
-          </>
+        {isInitialLoading && <SkeletonLoader />}
+
+        {previousImage && (
+          <AdvancedImage
+            key={`${previousImage.publicID}-previous`}
+            cldImg={previousImage}
+            className="visualizer-image loaded"
+            plugins={[responsive({ steps: 200 })]}
+          />
+        )}
+
+        {currentImage && (
+          <AdvancedImage
+            key={currentImage.publicID}
+            cldImg={currentImage}
+            className="visualizer-image loaded"
+            plugins={[lazyload(), responsive({ steps: 200 })]}
+            onClick={handleImageClick}
+          />
+        )}
+
+        {/* NEW: Conditionally render the small subsequent loader */}
+        <div
+          className={`subsequent-loader ${
+            isSubsequentLoading ? "visible" : ""
+          }`}>
+          <div className="spinner-small"></div>
+        </div>
+
+        {!isInitialLoading && (
+          <Info
+            className="info-icon"
+            color="white"
+            size={24}
+            onClick={(e) => {
+              e.stopPropagation();
+              onInfoClick();
+            }}
+          />
         )}
       </div>
+
+      {/* ... (lightbox logic remains the same) ... */}
       {isEnlarged && (
         <div className="lightbox-overlay" onClick={handleCloseEnlarged}>
           {isLightboxLoading && (
@@ -96,7 +134,7 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
             </div>
           )}
           <AdvancedImage
-            cldImg={displayedImage}
+            cldImg={currentImage}
             className={`lightbox-image ${isLightboxLoading ? "loading" : ""}`}
             onLoad={handleLightboxImageLoad}
             onError={handleLightboxImageError}

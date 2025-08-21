@@ -32,7 +32,7 @@ const OptionsColumn = React.memo(function OptionsColumn({
       <div className="option-group">
         <div className="option-title">
           <label>Select Your Sleeve Diameter</label>
-          <a class="option-group-description">
+          <a className="option-group-description">
             We highly recommend choosing a diameter AT LEAST .5” larger than
             your lift pole diameter.
           </a>
@@ -71,7 +71,7 @@ const OptionsColumn = React.memo(function OptionsColumn({
         <div className="label-container">
           <div className="option-title">
             <label>Select Your PolePad Color</label>
-            <a class="option-group-description">
+            <a className="option-group-description">
               A color must be selected to place items in the cart.
             </a>
           </div>
