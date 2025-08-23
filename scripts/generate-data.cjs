@@ -58,7 +58,6 @@ fs.createReadStream(inputFilePath)
 
     if (sku && salePrice > 0 && width && length) {
       const sizeKey = `${color}_w${width}_l${length}`;
-
       if (!sizeVariantMap.has(sizeKey)) {
         sizeVariantMap.set(sizeKey, {
           sku,
@@ -74,6 +73,26 @@ fs.createReadStream(inputFilePath)
           variantId,
           imagePaths: {},
         });
+      }
+      // If color is black, also add a 'none' color duplicate
+      if (color === "black") {
+        const noneSizeKey = `none_w${width}_l${length}`;
+        if (!sizeVariantMap.has(noneSizeKey)) {
+          sizeVariantMap.set(noneSizeKey, {
+            sku,
+            variantName: variantName.replace(/black/i, "none"),
+            price: salePrice,
+            retailPrice,
+            color: "none",
+            width,
+            length,
+            description,
+            shop,
+            flatRate,
+            variantId,
+            imagePaths: {},
+          });
+        }
       }
     }
   })
