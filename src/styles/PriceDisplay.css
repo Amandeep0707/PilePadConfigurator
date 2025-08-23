@@ -38,6 +38,13 @@
   gap: 0.75rem;
 }
 
+.quantity {
+  font-size: 1rem;
+  align-self: flex-end;
+  color: var(--text-color);
+  margin-left: 0.3rem;
+}
+
 .retail-price {
   font-size: 1rem;
   font-weight: 400;

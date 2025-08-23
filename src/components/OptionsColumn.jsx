@@ -4,6 +4,7 @@ import { Share, ShoppingCart } from "lucide-react";
 const OptionsColumn = React.memo(function OptionsColumn({
   options,
   config,
+  polesQuantity,
   onConfigChange,
   priceDisplay,
   handleCopyLink,
@@ -31,7 +32,7 @@ const OptionsColumn = React.memo(function OptionsColumn({
       {/* Options { Width, Length, Color} */}
       <div className="option-group">
         <div className="option-title">
-          <label>Select Your Sleeve Diameter</label>
+          <label>Select Your PolePad Diameter</label>
           <a className="option-group-description">
             We highly recommend choosing a diameter AT LEAST .5” larger than
             your lift pole diameter.
@@ -136,6 +137,18 @@ const OptionsColumn = React.memo(function OptionsColumn({
             Add to Cart
           </button>
         </div>
+      </div>
+      <div className="external-link-container">
+        <span className="external-link-heading">
+          {`You’re purchasing a ${polesQuantity}-pack of custom PolePads. Need a different
+          quantity?`}
+        </span>
+        <a
+          className="external-link"
+          href="https://pilepad.com/shop/polepad"
+          rel="https://pile-pad-configurator.vercel.app/">
+          Shop Here
+        </a>
       </div>
     </div>
   );

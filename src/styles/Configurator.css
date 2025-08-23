@@ -51,6 +51,7 @@
   box-shadow: 0 0px 20px var(--shadow-color);
   overflow-y: auto;
   overflow-x: hidden;
+  /* overflow-clip-margin: content-box; */
   padding: 1rem;
   max-height: fit-content;
 
@@ -274,6 +275,25 @@
   padding: 0.5rem;
   position: sticky;
   bottom: 0;
+}
+
+.external-link-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.external-link-heading {
+  font-size: 0.85rem;
+  color: var(--text-color);
+}
+
+.external-link {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .add-to-cart-button {

@@ -1,12 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useSearchParams, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import {
-  environments,
-  options,
-  sheetData,
-  findVariant,
-} from "../data/configProcessor";
+import { environments, options, findVariant } from "../data/configProcessor";
 import Visualizer from "./Visualizer";
 import OptionsColumn from "./OptionsColumn";
 import PriceDisplay from "./PriceDisplay";
@@ -47,7 +42,7 @@ function Configurator({ onBack, onOpenModal }) {
 
   const foundVariant = useMemo(
     () => findVariant(config),
-    [config.width, config.length]
+    [config.color, config.width, config.length]
   );
 
   const totalPrice = useMemo(() => {
@@ -122,9 +117,11 @@ function Configurator({ onBack, onOpenModal }) {
         <OptionsColumn
           options={options}
           config={config}
+          polesQuantity={environment.poles}
           onConfigChange={handleConfigChange}
           priceDisplay={
             <PriceDisplay
+              quantity={environment.poles}
               totalPrice={totalPrice}
               totalRetailPrice={totalRetailPrice}
             />

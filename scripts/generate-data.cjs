@@ -3,7 +3,7 @@ const path = require("path");
 const csv = require("csv-parser");
 
 const inputFilePath = path.join(__dirname, "../pricing_data.csv");
-const outputFilePath = path.join(__dirname, "../src/data", "pricing_data.json");
+const outputFilePath = path.join(__dirname, "../src/data", "client_data.json");
 
 const ENVIRONMENTS = ["lift2", "lift4"];
 const COLORS_TO_GENERATE = ["black", "grey", "none"];
@@ -56,14 +56,8 @@ fs.createReadStream(inputFilePath)
     const width = `${parseFloat(widthRaw).toFixed(1)}"`;
     const length = `${parseFloat(lengthRaw).toFixed(1)}"`;
 
-    if (
-      sku &&
-      salePrice > 0 &&
-      width &&
-      length &&
-      (color === "black" || color === "grey")
-    ) {
-      const sizeKey = `w${width}_l${length}`;
+    if (sku && salePrice > 0 && width && length) {
+      const sizeKey = `${color}_w${width}_l${length}`;
 
       if (!sizeVariantMap.has(sizeKey)) {
         sizeVariantMap.set(sizeKey, {
@@ -71,6 +65,7 @@ fs.createReadStream(inputFilePath)
           variantName,
           price: salePrice,
           retailPrice,
+          color,
           width,
           length,
           description,

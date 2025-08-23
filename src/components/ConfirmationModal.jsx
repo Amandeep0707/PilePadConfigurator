@@ -28,7 +28,8 @@ const ConfirmationModal = ({ isOpen, closeModal, config, onConfirm }) => {
               <p>Please review the items you are adding to your cart:</p>
               <div className="summary-item">
                 <span className="summary-label">
-                  {config.environmentName} ({config.poles} Poles)
+                  {/* {config.environmentName} ({config.poles} Poles) */}
+                  Custom PolePad Set:
                 </span>
                 <span className="summary-value">
                   {config.poles} x {formatCurrency(config.price)}

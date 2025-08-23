@@ -104,13 +104,11 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
           />
         )}
 
-        {/* NEW: Conditionally render the small subsequent loader */}
-        <div
-          className={`subsequent-loader ${
-            isSubsequentLoading ? "visible" : ""
-          }`}>
-          <div className="spinner-small"></div>
-        </div>
+        {isSubsequentLoading && (
+          <div className="loader-container">
+            <MoonLoader color="#ffffff" size={24} />
+          </div>
+        )}
 
         {!isInitialLoading && (
           <Info

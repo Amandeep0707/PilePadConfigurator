@@ -1,5 +1,4 @@
 import rawPricingData from "./client_data.json";
-import { fetchSheetData } from "./googleSheetsService";
 
 function processData() {
   const variants = Object.values(rawPricingData);
@@ -8,7 +7,8 @@ function processData() {
   variants.forEach((variant) => {
     const widthKey = parseFloat(variant.width).toFixed(1);
     const lengthKey = parseFloat(variant.length).toFixed(1);
-    const key = `w${widthKey}_l${lengthKey}`;
+    const colorKey = variant.color;
+    const key = `${colorKey}_w${widthKey}_l${lengthKey}`;
 
     if (!variantMap.has(key)) {
       variantMap.set(key, variant);
@@ -18,7 +18,9 @@ function processData() {
   const uniqueVariants = Array.from(variantMap.values());
   const uniqueWidths = [
     ...new Set(uniqueVariants.map((v) => parseFloat(v.width))),
-  ].sort((a, b) => a - b);
+  ]
+    .filter((w) => w !== 5.0)
+    .sort((a, b) => a - b);
   const uniqueLengths = [
     ...new Set(uniqueVariants.map((v) => parseFloat(v.length))),
   ].sort((a, b) => a - b);
@@ -56,27 +58,26 @@ function processData() {
       "These are custom-made, ready-to-install padded covers for your boat lift’s guide poles. Made to fit loosely for easy installation and removal, yet stays put while your lift is submerged. PolePads are made to order, just provide your pole measurements and we’ll do the rest!\n\nThe Details\n- No care instructions. Set it and forget it.\n- Durable, UV-resistant outer shell\n- Padded interior for added support\n- Ships directly to your door\n\nBest Use: Lift guide poles, trailer guide poles",
   };
 
-  const sheetData = fetchSheetData();
-
   /**
    * Finds a specific product variant based on the size configuration.
    * @param {object} config - The selected configuration {width, length}.
    * @returns {object|null} The found variant object or null.
    */
   const findVariant = (config) => {
-    if (!config || !config.width || !config.length) {
+    if (!config || !config.color || !config.width || !config.length) {
       return null;
     }
-    const key = `w${config.width.toFixed(1)}_l${config.length.toFixed(1)}`;
+    const key = `${config.color}_w${config.width.toFixed(
+      1
+    )}_l${config.length.toFixed(1)}`;
     return variantMap.get(key) || null;
   };
 
   return {
     environments,
     options,
-    sheetData,
     findVariant,
   };
 }
 
-export const { environments, options, sheetData, findVariant } = processData();
+export const { environments, options, findVariant } = processData();
