@@ -106,7 +106,7 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
 
         {isSubsequentLoading && (
           <div className="loader-container">
-            <MoonLoader color="#ffffff" size={24} />
+            <MoonLoader color="#ffffff" size={20} />
           </div>
         )}
 
@@ -120,6 +120,10 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
               onInfoClick();
             }}
           />
+        )}
+
+        {!isInitialLoading && (
+          <img src="/brandLogo.webp" className="brand-logo" />
         )}
       </div>
 

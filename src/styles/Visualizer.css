@@ -95,6 +95,15 @@
   opacity: 1;
 }
 
+.brand-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15%;
+  padding: 0.5rem;
+  z-index: 3;
+}
+
 .loader-container {
   position: absolute;
   bottom: 0;
