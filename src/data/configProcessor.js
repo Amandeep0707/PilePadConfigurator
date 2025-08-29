@@ -16,14 +16,20 @@ function processData() {
   });
 
   const uniqueVariants = Array.from(variantMap.values());
+  const excludedWidths = [5.0, 6.0]; // Add any widths to exclude here
+  const excludedLengths = [36.0, 42.0, 48.0, 54.0]; // Add any lengths to exclude here
+
   const uniqueWidths = [
     ...new Set(uniqueVariants.map((v) => parseFloat(v.width))),
   ]
-    .filter((w) => w !== 5.0)
+    .filter((w) => !excludedWidths.includes(w))
     .sort((a, b) => a - b);
+
   const uniqueLengths = [
     ...new Set(uniqueVariants.map((v) => parseFloat(v.length))),
-  ].sort((a, b) => a - b);
+  ]
+    .filter((l) => !excludedLengths.includes(l))
+    .sort((a, b) => a - b);
 
   const environments = [
     {

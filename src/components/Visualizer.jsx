@@ -106,7 +106,7 @@ function Visualizer({ environmentId, variant, color, showBoat, onInfoClick }) {
 
         {isSubsequentLoading && (
           <div className="loader-container">
-            <MoonLoader color="#ffffff" size={20} />
+            <MoonLoader color="#90f209" size={20} />
           </div>
         )}
 
