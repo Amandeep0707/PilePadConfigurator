@@ -79,7 +79,7 @@ const OptionsColumn = React.memo(function OptionsColumn({
           <button
             className={`toggle-button ${config.showBoat ? "active" : ""}`}
             onClick={() => onConfigChange("showBoat", !config.showBoat)}>
-            SHOW BOAT
+            {`${config.showBoat ? "HIDE BOAT" : "SHOW BOAT"}`}
           </button>
         </div>
         <div className="color-selector">

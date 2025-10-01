@@ -25,7 +25,7 @@ const ProductDescription = ({ isOpen, onClose, description }) => {
         </div>
         <div className="product-modal-content">
           {description ? (
-            <p>{description}</p>
+            <p>{description.trim()}</p>
           ) : (
             <p>No description available.</p>
           )}
