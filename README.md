@@ -40,7 +40,7 @@ Before running the application, ensure the following are installed on your compu
 3.  **Setup Environment Variables**
     The app requires Cloudinary API keys to function (to load images/textures).
 
-    - Create a new file in the root folder named: `.env`
+    - Create a new file in the root(main) folder named: `.env`
     - Open `.env` in your text editor and paste the following keys:
 
     ```env
@@ -70,7 +70,7 @@ Yes, the prices can be changed easily. The product data is typically stored in a
 
     - Open the `src` folder.
     - Look for a folder named `data`.
-    - Inside, look for a file named `client_data.js`.
+    - Inside, look for a file named `client_data.json`.
     - _Tip: If you cannot find it, press `Ctrl + Shift + F` (in VS Code) and search for one of the current prices (e.g., if a product costs $500, search for "500")._
 
 2.  **Edit the Price:**
